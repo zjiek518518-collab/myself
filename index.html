@@ -145,8 +145,16 @@
     </div>
 
     <script>
-        const bgm = document.getElementById('bgm');
-        const intro = document.getElementById('intro');
-        const main = document.getElementById('main');
-        const bg = document.getElementById('bg');
-        const
+    const bgm = document.getElementById('bgm');
+    const intro = document.getElementById('intro');
+    const main = document.getElementById('main');
+    const bg = document.getElementById('bg');
+    const enterBtn = document.getElementById('enterBtn');
+
+    enterBtn.addEventListener('click', function () {
+        bgm.play().catch(function () {});
+        bg.classList.add('visible');
+        intro.classList.add('hidden');
+        main.classList.add('visible');
+    });
+</script>
