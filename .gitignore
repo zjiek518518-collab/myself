@@ -1,0 +1,16 @@
+﻿# 单文件版：图片和音乐都内嵌在里面（7 MB），只在本机用，不用上传
+守岸人的港湾-单文件版.html
+
+# 原始素材副本（站点实际用的是 assets/ 里的那两份）
+/bg.jpg
+/bg.jpg.jpg
+/bgm.mp3
+index.html.txt
+
+# 系统 / 编辑器垃圾
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log
