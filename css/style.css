@@ -774,7 +774,7 @@ body.is-entered .main { opacity: 1; visibility: visible; }
   left: clamp(10px, 2.6vw, 28px);
   bottom: clamp(10px, 2.4vw, 24px);
   z-index: 34;
-  width: 104px;
+  width: 124px;
   /* left/bottom 是她的「家」，走动的偏移量放在 --wx / --wy */
   transform: translate3d(var(--wx, 0px), var(--wy, 0px), 0);
   transition: transform var(--walk-dur, 0s) linear;
@@ -808,7 +808,7 @@ body.is-entered .pet__enter {
   filter: drop-shadow(0 10px 24px rgba(4, 12, 26, .6));
   transition: transform .4s var(--ease);
 }
-.pet__art svg {
+.pet__art img {
   display: block;
   width: 100%;
   height: auto;
@@ -820,23 +820,12 @@ body.is-entered .pet__enter {
 }
 
 /* 走动时的步伐 + 朝向 */
-.pet.is-walking .pet__art svg { animation: petWalk .46s ease-in-out infinite; }
+.pet.is-walking .pet__art img { animation: petWalk .46s ease-in-out infinite; }
 @keyframes petWalk {
   0%, 100% { transform: translateY(0) rotate(-3deg); }
   50%      { transform: translateY(-6px) rotate(3deg); }
 }
 .pet.is-facing-left .pet__art { transform: scaleX(-1); }
-
-/* 手里的晶方呼吸发光 */
-.pet-cube {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: petCube 2.8s ease-in-out infinite;
-}
-@keyframes petCube {
-  0%, 100% { opacity: .65; transform: scale(.96); }
-  50%      { opacity: 1;   transform: scale(1.14); }
-}
 
 /* 被点一下的反馈 */
 .pet.is-poked .pet__art { animation: petPoke .45s var(--ease); }
@@ -1032,7 +1021,7 @@ body.is-entered .pet__enter {
 }
 
 /* 安静模式下不提速、不晃：走动动画本来就不会触发，这里再兜一层 */
-.pet.is-quiet .pet__art svg { animation-duration: 6.4s; }
+.pet.is-quiet .pet__art img { animation-duration: 6.4s; }
 
 /* 桌宠在屏幕右半边时，菜单改从左边弹出 */
 .pet--flip .pet__menu {
@@ -1070,7 +1059,7 @@ body.is-entered .pet__enter {
 
 @media (max-width: 760px) {
   /* 手机上路窄，菜单和气泡改到桌宠上方 */
-  .pet { width: 86px; }
+  .pet { width: 100px; }
   .pet__menu {
     left: -6px;
     bottom: calc(100% + 12px);

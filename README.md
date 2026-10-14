@@ -156,7 +156,7 @@ git push
 
 ## 六、桌宠（Q 版守岸人）
 
-页面左下角那只 Q 版守岸人是**用 SVG 手绘**的，不依赖任何图片文件，缩放不会糊、也不增加额外请求。
+页面左下角那只 Q 版守岸人就是 `assets/pet.png`（已经抠成透明背景，贴在深色页面上不会带白底）。**想换角色，直接替换这张图就行**，代码不用动。
 
 她会做的事：
 
@@ -176,7 +176,8 @@ git push
 | **台词** | `js/main.js` 里的 `PET_LINES`（平时说的）、`PET_WALK_LINES`（走动时）、`PET_NAV_LINES`（点她时） |
 | **走动速度 / 频率** | `wanderStep()` 里的 `46`（像素/秒）和 `Math.min(7, Math.max(1.4, ...))`（单次最长 7 秒）；`scheduleWander()` 里的 `7000 + Math.random() * 9000` 是间隔 |
 | **她的大小** | `css/style.css` 里 `.pet { width: 104px }`（手机端在媒体查询里是 86px） |
-| **换成自己的 Q 版立绘** | 把 `index.html` 里 `<span class="pet__art">` 内的 `<svg>…</svg>` 整块换成 `<img src="assets/pet.png" alt="">`，再把图片放进 `assets/` |
+| **换成自己的立绘** | 直接把 `assets/pet.png` 覆盖掉即可（建议：透明背景 PNG，宽度 460px 左右，接近正方形）。代码里的 `<img src="assets/pet.png">` 不用改 |
+| **抠图怎么做的** | 若你换新图需要去底：从四角洪水填充去掉外部白底、只保留最大连通块（去掉水印碎点）、边缘轻微羽化 —— 用 Pillow + numpy 几十行就能做 |
 | **让她别乱走** | 直接开「安静模式」，或者删掉 `js/main.js` 里 `scheduleWander(...)` 的调用 |
 | **清掉她记住的位置/开关** | 浏览器控制台执行 `localStorage.removeItem('harbor-pet-pos'); localStorage.removeItem('harbor-pet-quiet')` |
 
