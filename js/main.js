@@ -45,6 +45,10 @@
     } else {
       setToggleState(false, '');
     }
+
+    // 桌宠：可以点了 + 冒个提示气泡
+    if (pet) pet.removeAttribute('inert');
+    schedulePetHint();
   }
 
   if (enterBtn) enterBtn.addEventListener('click', enterSite);
@@ -222,6 +226,7 @@
     requestAnimationFrame(function () {
       ticking = false;
       revealInView();
+      updatePetNav();
     });
   }
 
@@ -254,12 +259,185 @@
   }
 
   /* ---------------------------------------------
+     5. 桌宠：Q 版守岸人（导航 + 拖动）
+     --------------------------------------------- */
+  var pet = document.getElementById('pet');
+  var petBtn = document.getElementById('petBtn');
+  var petMenu = document.getElementById('petMenu');
+  var petHint = document.getElementById('petHint');
+  var petLinks = petMenu ? Array.prototype.slice.call(petMenu.querySelectorAll('a[href^="#"]')) : [];
+  var PET_POS_KEY = 'harbor-pet-pos';
+  var petHintTimer = 0;
+
+  function petMenuIsOpen() {
+    return !!(petMenu && petMenu.classList.contains('is-open'));
+  }
+
+  // 桌宠在屏幕右半边时，菜单/气泡改往左边弹
+  function updatePetFlip() {
+    if (!pet) return;
+    var r = pet.getBoundingClientRect();
+    var centerX = r.left + r.width / 2;
+    pet.classList.toggle('pet--flip', centerX > window.innerWidth * 0.55);
+  }
+
+  function openPetMenu(open) {
+    if (!petMenu || !petBtn) return;
+    petMenu.classList.toggle('is-open', open);
+    petMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    petBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open && petHint) petHint.hidden = true;
+  }
+
+  // 点了桌宠 2.6 秒后冒个气泡提示一下，几秒后自己缩回去
+  function schedulePetHint() {
+    if (!petHint) return;
+    clearTimeout(petHintTimer);
+    petHintTimer = setTimeout(function () {
+      if (entered && !petMenuIsOpen()) petHint.hidden = false;
+      petHintTimer = setTimeout(function () { petHint.hidden = true; }, 9000);
+    }, 2600);
+  }
+
+  if (petBtn) {
+    petBtn.addEventListener('click', function () {
+      // 刚拖完的那一下不算“点击”
+      if (pet && pet.dataset.dragged === '1') return;
+      updatePetFlip();
+      openPetMenu(!petMenuIsOpen());
+      if (pet) {
+        pet.classList.add('is-poked');
+        setTimeout(function () { pet.classList.remove('is-poked'); }, 460);
+      }
+    });
+  }
+
+  if (petMenu) {
+    // 点导航项：收起菜单（平滑滚动交给全局的锚点逻辑）
+    petMenu.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a[href^="#"]')) openPetMenu(false);
+    });
+  }
+
+  // 点空白处 / 按 Esc 收起
+  document.addEventListener('pointerdown', function (e) {
+    if (!petMenuIsOpen() || !pet) return;
+    if (!pet.contains(e.target)) openPetMenu(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && petMenuIsOpen()) {
+      openPetMenu(false);
+      if (petBtn) petBtn.focus();
+    }
+  });
+
+  // 拖动桌宠，位置会记住
+  (function () {
+    if (!pet || !petBtn) return;
+    var dragging = false;
+    var moved = false;
+    var startX = 0, startY = 0, startLeft = 0, startBottom = 0;
+
+    function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+
+    function savePos() {
+      try {
+        localStorage.setItem(PET_POS_KEY, JSON.stringify({
+          left: pet.style.left, bottom: pet.style.bottom
+        }));
+      } catch (err) { /* 忽略 */ }
+    }
+
+    function applyPos(left, bottom) {
+      var w = pet.offsetWidth || 104;
+      var h = pet.offsetHeight || 140;
+      pet.style.left = clamp(left, 4, Math.max(4, window.innerWidth - w - 4)) + 'px';
+      pet.style.bottom = clamp(bottom, 4, Math.max(4, window.innerHeight - h - 4)) + 'px';
+      updatePetFlip();
+    }
+
+    petBtn.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      var r = pet.getBoundingClientRect();
+      dragging = true;
+      moved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      startLeft = r.left;
+      startBottom = window.innerHeight - r.bottom;
+      if (petBtn.setPointerCapture) {
+        try { petBtn.setPointerCapture(e.pointerId); } catch (err) { /* 忽略 */ }
+      }
+    });
+
+    petBtn.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;   // 小抖动不算拖动
+      if (!moved) {
+        moved = true;
+        pet.classList.add('is-dragging');
+        openPetMenu(false);
+      }
+      applyPos(startLeft + dx, startBottom - dy);
+      e.preventDefault();
+    });
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      if (!moved) return;
+      pet.classList.remove('is-dragging');
+      pet.dataset.dragged = '1';                 // 让紧随其后的 click 不打开菜单
+      savePos();
+      setTimeout(function () { pet.dataset.dragged = '0'; }, 350);
+    }
+    petBtn.addEventListener('pointerup', endDrag);
+    petBtn.addEventListener('pointercancel', endDrag);
+
+    // 恢复上次拖到的位置（先夹到当前视口内，免得换小屏后跑到屏幕外）
+    try {
+      var saved = JSON.parse(localStorage.getItem(PET_POS_KEY) || 'null');
+      if (saved && saved.left && saved.bottom) {
+        var sl = parseFloat(saved.left);
+        var sb = parseFloat(saved.bottom);
+        if (isFinite(sl) && isFinite(sb)) applyPos(sl, sb);
+      }
+    } catch (err) { /* 忽略 */ }
+
+    window.addEventListener('resize', function () {
+      var r = pet.getBoundingClientRect();
+      if (pet.style.left) applyPos(r.left, window.innerHeight - r.bottom);
+    }, { passive: true });
+  })();
+
+  // 菜单里高亮当前所在的版块
+  function updatePetNav() {
+    if (!petLinks.length) return;
+    var y = window.scrollY + window.innerHeight * 0.35;
+    var current = petLinks[0];
+    petLinks.forEach(function (a) {
+      var href = a.getAttribute('href');
+      var el = href === '#top' ? document.querySelector('.hero') : document.querySelector(href);
+      if (!el) return;
+      var top = el.getBoundingClientRect().top + window.scrollY;
+      if (top <= y) current = a;
+    });
+    petLinks.forEach(function (a) { a.classList.toggle('is-current', a === current); });
+  }
+
+  /* ---------------------------------------------
      4. 杂项
      --------------------------------------------- */
   // 开场期间不让键盘 Tab 进到主内容里
   if (main) main.setAttribute('inert', '');
+  if (pet) pet.setAttribute('inert', '');
 
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  updatePetNav();
+  updatePetFlip();
 
   // 锚点平滑滚动
   document.addEventListener('click', function (e) {
