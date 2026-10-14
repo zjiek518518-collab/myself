@@ -269,7 +269,12 @@
   var petSpeech = document.getElementById('petSpeech');
   var petLinks = petMenu ? Array.prototype.slice.call(petMenu.querySelectorAll('a[href^="#"]')) : [];
   var PET_POS_KEY = 'harbor-pet-pos';
+  var PET_QUIET_KEY = 'harbor-pet-quiet';
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var petQuiet = false;
+  try {
+    petQuiet = localStorage.getItem(PET_QUIET_KEY) === 'on';
+  } catch (err) { /* 忽略 */ }
 
   /* ✏️ 她的台词就改这两行 */
   var PET_LINES = [
@@ -312,7 +317,7 @@
   var lastSpokeAt = 0;
 
   function petSay(text, ms) {
-    if (!petSpeech || !text) return;
+    if (!petSpeech || !text || petQuiet) return;   // 安静模式下不说话
     petSpeech.textContent = text;
     petSpeech.classList.add('is-show');
     lastSpokeAt = Date.now();
@@ -323,18 +328,52 @@
     }, dur);
   }
 
-  // 隔一阵自己嘀咕一句（正在说话 / 开着菜单时不说）
+  // 隔一阵自己嘀咕一句（正在说话 / 开着菜单 / 安静模式时不说）
   var chatTimer = 0;
   function scheduleChat(delay) {
     clearTimeout(chatTimer);
-    if (reduceMotion) return;
+    if (reduceMotion || petQuiet) return;
     chatTimer = setTimeout(function () {
-      if (entered && !document.hidden && !petMenuIsOpen() && petSpeech &&
+      if (entered && !petQuiet && !document.hidden && !petMenuIsOpen() && petSpeech &&
           !petSpeech.classList.contains('is-show') && Date.now() - lastSpokeAt > 8000) {
         petSay(pick(PET_LINES));
       }
       scheduleChat(18000 + Math.random() * 22000);
     }, delay || (16000 + Math.random() * 16000));
+  }
+
+  /* ---------- 安静模式 ---------- */
+  var petQuietBtn = document.getElementById('petQuiet');
+  var petQuietText = petQuietBtn ? petQuietBtn.querySelector('.pet__quiet-text') : null;
+
+  function applyQuiet(on, silent) {
+    petQuiet = !!on;
+    if (pet) pet.classList.toggle('is-quiet', petQuiet);
+    if (petQuietBtn) petQuietBtn.setAttribute('aria-pressed', petQuiet ? 'true' : 'false');
+    if (petQuietText) petQuietText.textContent = petQuiet ? '安静模式：开' : '安静模式：关';
+    try {
+      localStorage.setItem(PET_QUIET_KEY, petQuiet ? 'on' : 'off');
+    } catch (err) { /* 忽略 */ }
+
+    if (petQuiet) {
+      // 立刻停下来：把当前位置固定住，清掉待办，收回气泡
+      freezeWalk();
+      clearTimeout(wanderTimer);
+      clearTimeout(chatTimer);
+      clearTimeout(speechTimer);
+      if (petSpeech) petSpeech.classList.remove('is-show');
+    } else {
+      pausedUntil = 0;              // 关掉安静模式后可以立刻恢复活动
+      scheduleWander(3000);
+      scheduleChat(14000);
+      if (!silent) petSay('好，我继续走走。', 2600);
+    }
+  }
+
+  if (petQuietBtn) {
+    petQuietBtn.addEventListener('click', function () {
+      applyQuiet(!petQuiet);
+    });
   }
 
   /* ---------- 自己走动 ---------- */
@@ -370,12 +409,12 @@
 
   function scheduleWander(delay) {
     clearTimeout(wanderTimer);
-    if (reduceMotion || !pet) return;
+    if (reduceMotion || petQuiet || !pet) return;
     wanderTimer = setTimeout(wanderStep, delay || (7000 + Math.random() * 9000));
   }
 
   function wanderStep() {
-    if (!pet || walking || !entered || document.hidden || petMenuIsOpen() || Date.now() < pausedUntil) {
+    if (!pet || walking || !entered || petQuiet || document.hidden || petMenuIsOpen() || Date.now() < pausedUntil) {
       scheduleWander(5000);
       return;
     }
@@ -583,6 +622,9 @@
 
   updatePetNav();
   updatePetFlip();
+
+  // 恢复「安静模式」的开关状态（静默应用，不触发她说话）
+  applyQuiet(petQuiet, true);
 
   // 锚点平滑滚动
   document.addEventListener('click', function (e) {

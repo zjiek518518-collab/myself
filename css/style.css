@@ -975,6 +975,65 @@ body.is-entered .pet__enter {
 }
 .pet__nav a.is-current::before { opacity: 1; transform: scale(1.3); }
 
+/* ---------- 安静模式开关 ---------- */
+.pet__menu-foot {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+.pet__quiet {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font-family: inherit;
+  font-size: .8rem;
+  letter-spacing: .04em;
+  color: var(--text-dim);
+  text-align: left;
+  cursor: pointer;
+  transition: color .25s ease, background .25s ease;
+}
+.pet__quiet:hover { background: rgba(77, 163, 255, .12); color: #fff; }
+.pet__quiet[aria-pressed="true"] { color: #fff; }
+
+.pet__switch {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 17px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(120, 190, 255, .16);
+  transition: background .3s ease, border-color .3s ease;
+}
+.pet__switch i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--blue-300);
+  box-shadow: 0 0 8px rgba(127, 216, 255, .8);
+  transition: transform .3s var(--ease), background .3s ease;
+}
+.pet__quiet[aria-pressed="true"] .pet__switch {
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+  border-color: transparent;
+}
+.pet__quiet[aria-pressed="true"] .pet__switch i {
+  transform: translateX(13px);
+  background: #fff;
+}
+
+/* 安静模式下不提速、不晃：走动动画本来就不会触发，这里再兜一层 */
+.pet.is-quiet .pet__art svg { animation-duration: 6.4s; }
+
 /* 桌宠在屏幕右半边时，菜单改从左边弹出 */
 .pet--flip .pet__menu {
   left: auto;
