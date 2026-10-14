@@ -46,9 +46,11 @@
       setToggleState(false, '');
     }
 
-    // 桌宠：可以点了 + 冒个提示气泡
+    // 桌宠：打个招呼，然后开始自己溜达
     if (pet) pet.removeAttribute('inert');
-    schedulePetHint();
+    petSay('欢迎回来，这里的风很轻。', 4200);
+    scheduleWander(6000);
+    scheduleChat(22000);
   }
 
   if (enterBtn) enterBtn.addEventListener('click', enterSite);
@@ -259,15 +261,30 @@
   }
 
   /* ---------------------------------------------
-     5. 桌宠：Q 版守岸人（导航 + 拖动）
+     5. 桌宠：Q 版守岸人（说话 + 自己走动 + 导航 + 拖动）
      --------------------------------------------- */
   var pet = document.getElementById('pet');
   var petBtn = document.getElementById('petBtn');
   var petMenu = document.getElementById('petMenu');
-  var petHint = document.getElementById('petHint');
+  var petSpeech = document.getElementById('petSpeech');
   var petLinks = petMenu ? Array.prototype.slice.call(petMenu.querySelectorAll('a[href^="#"]')) : [];
   var PET_POS_KEY = 'harbor-pet-pos';
-  var petHintTimer = 0;
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  /* ✏️ 她的台词就改这两行 */
+  var PET_LINES = [
+    '潮汐不眠，我一直在这儿。',
+    '欢迎回来，这里的风很轻。',
+    '蝴蝶认得回家的路。',
+    '时间像潮水一样，慢慢流过去。',
+    '蓝色的星星，只在夜里亮。',
+    '累的话，就靠岸歇一会儿。',
+    '这片海岸，只属于我们。'
+  ];
+  var PET_WALK_LINES = ['跟我来。', '四处看看…', '这里的浪声很好听。'];
+  var PET_NAV_LINES = ['想去哪里看看？', '我带你走。', '要看哪一段？'];
+
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
 
   function petMenuIsOpen() {
     return !!(petMenu && petMenu.classList.contains('is-open'));
@@ -286,17 +303,120 @@
     petMenu.classList.toggle('is-open', open);
     petMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
     petBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (open && petHint) petHint.hidden = true;
+    if (pet) pet.classList.toggle('is-menu-open', open);
+    if (open) pausedUntil = Date.now() + 15000;   // 菜单开着的时候先别乱跑
   }
 
-  // 点了桌宠 2.6 秒后冒个气泡提示一下，几秒后自己缩回去
-  function schedulePetHint() {
-    if (!petHint) return;
-    clearTimeout(petHintTimer);
-    petHintTimer = setTimeout(function () {
-      if (entered && !petMenuIsOpen()) petHint.hidden = false;
-      petHintTimer = setTimeout(function () { petHint.hidden = true; }, 9000);
-    }, 2600);
+  /* ---------- 说话 ---------- */
+  var speechTimer = 0;
+  var lastSpokeAt = 0;
+
+  function petSay(text, ms) {
+    if (!petSpeech || !text) return;
+    petSpeech.textContent = text;
+    petSpeech.classList.add('is-show');
+    lastSpokeAt = Date.now();
+    clearTimeout(speechTimer);
+    var dur = ms || Math.min(9000, 2600 + text.length * 180);
+    speechTimer = setTimeout(function () {
+      petSpeech.classList.remove('is-show');
+    }, dur);
+  }
+
+  // 隔一阵自己嘀咕一句（正在说话 / 开着菜单时不说）
+  var chatTimer = 0;
+  function scheduleChat(delay) {
+    clearTimeout(chatTimer);
+    if (reduceMotion) return;
+    chatTimer = setTimeout(function () {
+      if (entered && !document.hidden && !petMenuIsOpen() && petSpeech &&
+          !petSpeech.classList.contains('is-show') && Date.now() - lastSpokeAt > 8000) {
+        petSay(pick(PET_LINES));
+      }
+      scheduleChat(18000 + Math.random() * 22000);
+    }, delay || (16000 + Math.random() * 16000));
+  }
+
+  /* ---------- 自己走动 ---------- */
+  var walkX = 0, walkY = 0, walking = false, walkTimer = 0, wanderTimer = 0, pausedUntil = 0;
+
+  function petHome() {
+    var left = parseFloat(pet.style.left);
+    var bottom = parseFloat(pet.style.bottom);
+    return {
+      left: isFinite(left) ? left : 28,
+      bottom: isFinite(bottom) ? bottom : 24,
+      w: pet.offsetWidth || 104
+    };
+  }
+
+  // 把「当前视觉位置」固化成新的 left/bottom，并清掉走动偏移
+  // （走动动画进行到一半时也能正确接住，不会跳位）
+  function freezeWalk() {
+    if (!pet) return;
+    clearTimeout(walkTimer);
+    walking = false;
+    pet.classList.remove('is-walking');
+
+    var r = pet.getBoundingClientRect();
+    pet.style.setProperty('--walk-dur', '0s');
+    pet.style.setProperty('--wx', '0px');
+    pet.style.setProperty('--wy', '0px');
+    walkX = 0;
+    walkY = 0;
+    pet.style.left = r.left + 'px';
+    pet.style.bottom = (window.innerHeight - r.bottom) + 'px';
+  }
+
+  function scheduleWander(delay) {
+    clearTimeout(wanderTimer);
+    if (reduceMotion || !pet) return;
+    wanderTimer = setTimeout(wanderStep, delay || (7000 + Math.random() * 9000));
+  }
+
+  function wanderStep() {
+    if (!pet || walking || !entered || document.hidden || petMenuIsOpen() || Date.now() < pausedUntil) {
+      scheduleWander(5000);
+      return;
+    }
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var home = petHome();
+    var h = pet.offsetHeight || 140;
+
+    // 横向随便走，纵向只在她「家」附近小幅浮动，不会跑到内容中间
+    var targetLeft = 8 + Math.random() * Math.max(1, vw - home.w - 16);
+    var targetBottom = Math.min(
+      Math.max(home.bottom + (Math.random() - 0.5) * 90, 8),
+      Math.max(8, vh - h - 8)
+    );
+
+    var dx = (targetLeft - home.left) - walkX;
+    var dy = (targetBottom - home.bottom) - walkY;
+    if (Math.abs(dx) < 24 && Math.abs(dy) < 12) { scheduleWander(4000); return; }
+
+    // 大约 46 px/s，距离越远走得越久
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var dur = Math.min(7, Math.max(1.4, dist / 46));
+
+    walkX += dx;
+    walkY += dy;
+    walking = true;
+    pet.classList.add('is-walking');
+    pet.classList.toggle('is-facing-left', dx < 0);
+    pet.style.setProperty('--walk-dur', dur.toFixed(2) + 's');
+    pet.style.setProperty('--wx', Math.round(walkX) + 'px');
+    // walkY 以「向上为正」，而 CSS 的 Y 轴向下为正，所以取负
+    pet.style.setProperty('--wy', Math.round(-walkY) + 'px');
+
+    clearTimeout(walkTimer);
+    walkTimer = setTimeout(function () {
+      walking = false;
+      pet.classList.remove('is-walking');
+      updatePetFlip();
+      if (Math.random() < 0.45 && !petMenuIsOpen()) petSay(pick(PET_WALK_LINES), 2600);
+      scheduleWander();
+    }, dur * 1000 + 140);
   }
 
   if (petBtn) {
@@ -304,7 +424,9 @@
       // 刚拖完的那一下不算“点击”
       if (pet && pet.dataset.dragged === '1') return;
       updatePetFlip();
-      openPetMenu(!petMenuIsOpen());
+      var willOpen = !petMenuIsOpen();
+      openPetMenu(willOpen);
+      if (willOpen) petSay(pick(PET_NAV_LINES), 3600);
       if (pet) {
         pet.classList.add('is-poked');
         setTimeout(function () { pet.classList.remove('is-poked'); }, 460);
@@ -358,6 +480,7 @@
 
     petBtn.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
+      freezeWalk();                                  // 先把走动偏移并进 left/bottom
       var r = pet.getBoundingClientRect();
       dragging = true;
       moved = false;
@@ -390,7 +513,10 @@
       if (!moved) return;
       pet.classList.remove('is-dragging');
       pet.dataset.dragged = '1';                 // 让紧随其后的 click 不打开菜单
+      freezeWalk();
       savePos();
+      updatePetFlip();
+      pausedUntil = Date.now() + 12000;          // 你放哪儿她就在哪儿待一会儿
       setTimeout(function () { pet.dataset.dragged = '0'; }, 350);
     }
     petBtn.addEventListener('pointerup', endDrag);
@@ -407,10 +533,29 @@
     } catch (err) { /* 忽略 */ }
 
     window.addEventListener('resize', function () {
+      // 视口变了：走动偏移清零，再按新的范围夹一次
+      walkX = 0;
+      walkY = 0;
+      pet.style.setProperty('--wx', '0px');
+      pet.style.setProperty('--wy', '0px');
       var r = pet.getBoundingClientRect();
       if (pet.style.left) applyPos(r.left, window.innerHeight - r.bottom);
     }, { passive: true });
   })();
+
+  // 切走标签页就别走了，回来再继续
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      clearTimeout(wanderTimer);
+      clearTimeout(chatTimer);
+      clearTimeout(walkTimer);
+    } else if (entered) {
+      walking = false;
+      if (pet) pet.classList.remove('is-walking');
+      scheduleWander(4000);
+      scheduleChat(6000);
+    }
+  });
 
   // 菜单里高亮当前所在的版块
   function updatePetNav() {
