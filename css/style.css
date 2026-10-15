@@ -943,8 +943,29 @@ body.is-entered .pet__enter {
 .pet.is-dragging .pet__art { filter: drop-shadow(0 20px 26px rgba(0, 0, 0, .55)); }
 
 /* ---------- 贴边：拖到左右边缘就停在边上（正常站着，转身朝屏幕里侧） ---------- */
-.pet--edge-l .pet__speech { left: calc(100% + 10px); right: auto; }
-.pet--edge-r .pet__speech { left: auto; right: calc(100% + 10px); }
+.pet--edge-l .pet__speech { left: calc(100% + 10px); right: auto; width: 178px; }
+.pet--edge-r .pet__speech { left: auto; right: calc(100% + 10px); width: 178px; }
+
+/* 贴边专属动作：靠着边坐一会儿 / 偶尔探头 */
+.pet--edge-l { --edge-lean: -6deg; --edge-peek-x: -76px; }
+.pet--edge-r { --edge-lean: 6deg; --edge-peek-x: 76px; }
+
+/* 坐下：整个人矮下去、微微横向摊开，并朝边那侧靠 */
+.pet.is-edgesit .pet__chew { animation: petEdgeSit 5.4s var(--ease); }
+@keyframes petEdgeSit {
+  0%       { transform: none; }
+  14%, 76% { transform: translateY(15px) scale(1.06, .86) rotate(var(--edge-lean, 0deg)); }
+  88%      { transform: translateY(2px) scale(1.01, .98); }
+  100%     { transform: none; }
+}
+
+/* 探头：缩到边后面一半，停一下再冒出来 */
+.pet.is-edgepeek .pet__chew { animation: petEdgePeek 3.6s var(--ease); }
+@keyframes petEdgePeek {
+  0%       { transform: none; }
+  18%, 62% { transform: translateX(var(--edge-peek-x, 0px)) rotate(var(--edge-lean, 0deg)); }
+  100%     { transform: none; }
+}
 
 /* 朝向 */
 .pet.is-facing-left .pet__art { transform: scaleX(-1); }

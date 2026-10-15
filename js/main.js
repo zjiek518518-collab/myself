@@ -300,6 +300,7 @@
 
   /* ---------- 贴边：拖到左右边缘就停在边上（正常站着、转身朝屏幕里侧） ---------- */
   var clinging = '';        // '' | 'l' | 'r'
+  var edgeTimer = 0;        // 贴边专属动作的计时器
   var EDGE_NEAR = 64;       // 盒子离边缘这么近就吸附
   var clingTimer = 0;
 
@@ -307,7 +308,8 @@
     if (!clinging || !pet) return;
     clinging = '';
     clearTimeout(clingTimer);
-    pet.classList.remove('pet--edge-l', 'pet--edge-r');
+    clearTimeout(edgeTimer);
+    pet.classList.remove('pet--edge-l', 'pet--edge-r', 'is-edgesit', 'is-edgepeek');
     pet.style.setProperty('--walk-dur', '.45s');
     var r = pet.getBoundingClientRect();
     var w = pet.offsetWidth || 168;
@@ -354,6 +356,7 @@
     petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
     clearTimeout(clingTimer);
     clingTimer = setTimeout(function () { releaseCling(true); }, 70000 + Math.random() * 40000);
+    scheduleEdgeAction(2600);
     return true;
   }
 
@@ -476,6 +479,23 @@
     walkY = 0;
     pet.style.left = r.left + 'px';
     pet.style.bottom = (window.innerHeight - r.bottom) + 'px';
+  }
+
+  /* ---------- 贴边专属动作：靠着边坐一会儿 / 偶尔探头 ---------- */
+  function scheduleEdgeAction(delay) {
+    clearTimeout(edgeTimer);
+    if (!clinging || reduceMotion || petQuiet || !pet) return;
+    edgeTimer = setTimeout(function () {
+      if (clinging && !document.hidden && !petMenuIsOpen() && !pet.classList.contains('is-dragging')) {
+        var sit = Math.random() < 0.5;
+        var cls = sit ? 'is-edgesit' : 'is-edgepeek';
+        pet.classList.add(cls);
+        if (sit && Math.random() < 0.55) petSay(pick(['靠着边坐会儿。', '这儿风小一点。', '歇一下。']), 2400);
+        else if (!sit && Math.random() < 0.5) petSay(pick(['有人吗？', '我看看。', '……']), 1600);
+        setTimeout(function () { pet.classList.remove(cls); }, sit ? 5400 : 3600);
+      }
+      scheduleEdgeAction(6000 + Math.random() * 7000);
+    }, delay || (4000 + Math.random() * 4000));
   }
 
   function scheduleWander(delay) {
