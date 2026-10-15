@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015d) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015e) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015d) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015e) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -887,12 +887,14 @@ body.is-entered .pet__enter {
 }
 
 /* ---------- 性格动作 ---------- */
-/* 转圈圈 */
-.pet.is-spinning .pet__chew { animation: petSpin .95s cubic-bezier(.4,0,.5,1); }
+/* 转身：不是整块旋转（会有一瞬间头朝下），而是快速镜像转个身 */
+.pet.is-spinning .pet__chew { animation: petSpin .9s var(--ease); }
 @keyframes petSpin {
-  0%   { transform: rotate(0) scale(1); }
-  50%  { transform: rotate(180deg) scale(1.04); }
-  100% { transform: rotate(360deg) scale(1); }
+  0%   { transform: scaleX(1); }
+  28%  { transform: scaleX(.12); }
+  58%  { transform: scaleX(-1); }
+  82%  { transform: scaleX(-.12); }
+  100% { transform: scaleX(1); }
 }
 /* 蹦一下 */
 .pet.is-hopping .pet__puppet { animation: petHop .55s cubic-bezier(.3,0,.4,1); }
@@ -941,8 +943,9 @@ body.is-entered .pet__enter {
 .pet--edge-r .pet__speech { left: auto; right: calc(100% + 10px); width: 178px; }
 
 /* 贴边专属动作：靠着边坐一会儿 / 偶尔探头 */
-.pet--edge-l { --edge-lean: 7deg;  --edge-peek-x: -76px; }   /* 背靠左边、身体朝里倾 */
-.pet--edge-r { --edge-lean: -7deg; --edge-peek-x: 76px; }  /* 背靠右边、身体朝里倾 */
+/* 两侧写同样的数值：右侧整体是镜像的（.pet__art 的 scaleX(-1)），
+   镜像会把「旋转」和「横向位移」一起翻转，所以相同数值才得到对称的效果 */
+.pet--edge-l, .pet--edge-r { --edge-lean: 7deg; --edge-peek-x: -76px; }
 
 /* 坐下：整个人矮下去、微微横向摊开，并朝边那侧靠 */
 .pet.is-edgesit .pet__chew {

@@ -572,7 +572,7 @@
   /* ---------- 性格小动作：转圈 / 趴下 / 蹦 / 伸懒腰 / 歪头 / 开心晃动 ---------- */
   var actionTimer = 0;
   var acting = false;
-  var ACTIONS = ['tilt', 'hop', 'spin', 'stretch', 'cheer'];
+  var ACTIONS = ['tilt', 'hop', 'spin', 'stretch', 'cheer'];   // spin = 快速转身（不是整块翻滚）
   var ACTION_CLASS = {
     tilt: 'is-tilting', hop: 'is-hopping', spin: 'is-spinning',
     stretch: 'is-stretching', cheer: 'is-cheering'
