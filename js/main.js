@@ -314,6 +314,11 @@
     var r = pet.getBoundingClientRect();
     var w = pet.offsetWidth || 168;
     var h = pet.offsetHeight || 165;
+    // 图层四周有透明留白，靠着时身体还会向内倾一点点——按「可见边缘」补偿
+    var boxW = pet.offsetWidth || 168;
+    var insetL = boxW * (parseFloat(getComputedStyle(pet).getPropertyValue('--art-inset-l')) || 6) / 100;
+    var insetR = boxW * (parseFloat(getComputedStyle(pet).getPropertyValue('--art-inset-r')) || 6) / 100;
+    var leanShift = Math.round(Math.sin(7 * Math.PI / 180) * (h * 0.42));
     pet.style.left = Math.min(Math.max(r.left, 4), Math.max(4, window.innerWidth - w - 4)) + 'px';
     pet.style.bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4)) + 'px';
     pet.style.setProperty('--wx', '0px');
@@ -353,8 +358,11 @@
     (function snap() {
       var rr = pet.getBoundingClientRect();
       var cur = parseFloat(pet.style.left) || 0;
-      if (side === 'l') pet.style.left = (cur - (rr.left - 4)) + 'px';
-      else pet.style.left = (cur + (vw - 3 - rr.right)) + 'px';
+      // 左右不对称：她在右侧是镜像的，而这张立绘左右轮廓不对称（头发往一侧飘），
+      // 所以右侧要额外补一段，才能让「看得见的身体」也贴住边
+      var asymR = 62;
+      if (side === 'l') pet.style.left = (cur - (rr.left - 4) - insetL - leanShift) + 'px';
+      else pet.style.left = (cur + (vw - 3 - rr.right) + insetR + leanShift + asymR) + 'px';
     })();
     var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
     pet.style.bottom = bottom + 'px';
