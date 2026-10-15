@@ -7,9 +7,9 @@
 <meta name="description" content="守岸人的港湾 —— 蓝色星空下的个人主页。">
 <meta name="theme-color" content="#050b16">
 <meta name="color-scheme" content="dark">
-<link rel="icon" href="assets/favicon.svg?v=20261015m" type="image/svg+xml">
-<link rel="preload" as="image" href="assets/bg.jpg?v=20261015m">
-<link rel="stylesheet" href="css/style.css?v=20261015m">
+<link rel="icon" href="assets/favicon.svg?v=20261015o" type="image/svg+xml">
+<link rel="preload" as="image" href="assets/bg.jpg?v=20261015o">
+<link rel="stylesheet" href="css/style.css?v=20261015o">
 
 <!-- 没有 JavaScript 时（或预览器屏蔽脚本时）不至于卡在开场层 -->
 <noscript>
@@ -26,7 +26,7 @@
 
 <!-- ================= 蝴蝶形状（所有蝴蝶共用这一份，只定义不显示） ================= -->
 <!-- ================= 背景音乐（进入后自动播放，右下角可随时开关） ================= -->
-<audio id="bgm" src="assets/bgm.mp3?v=20261015m" loop preload="none"></audio>
+<audio id="bgm" src="assets/bgm.mp3?v=20261015o" loop preload="none"></audio>
 
 <!-- ================= 开场层：蝴蝶从两侧飞到中间 ================= -->
 <div class="intro" id="intro">
@@ -35,44 +35,13 @@
   <div class="intro__stars" aria-hidden="true"></div>
 
   <div class="intro__flies" aria-hidden="true">
-    <!-- 左侧飞入：--cx / --cy 是汇聚点（避开中间的文字），--dx / --dy 是进入主页时散开的方向 -->
-    <span class="bf bf--l" style="--dur:2.6s;--delay:.10s;--y0:-10vh;--y1:-16vh;--y2:-12vh;--cx:-26vw;--cy:-15vh;--s:.80;--dx:-26vw;--dy:-20vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--l" style="--dur:2.3s;--delay:.25s;--y0:8vh;--y1:14vh;--y2:10vh;--cx:-18vw;--cy:21vh;--s:.95;--dx:-18vw;--dy:18vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--l" style="--dur:2.8s;--delay:.40s;--y0:-2vh;--y1:6vh;--y2:2vh;--cx:-32vw;--cy:2vh;--s:.70;--dx:-30vw;--dy:-6vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--l" style="--dur:2.2s;--delay:.55s;--y0:-14vh;--y1:-6vh;--y2:-9vh;--cx:-14vw;--cy:-26vh;--s:1.00;--dx:-12vw;--dy:-24vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--l" style="--dur:2.5s;--delay:.70s;--y0:12vh;--y1:4vh;--y2:8vh;--cx:-22vw;--cy:9vh;--s:.85;--dx:-22vw;--dy:22vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
+      <span class="swirl swirl--l"><span class="swirl__orbit"><img class="swirl__bf" src="assets/butterfly.png?v=20261015o" alt="" draggable="false" decoding="async"></span></span>
+      <span class="swirl swirl--r"><span class="swirl__orbit"><img class="swirl__bf" src="assets/butterfly.png?v=20261015o" alt="" draggable="false" decoding="async"></span></span>
+    </div>
 
-    <!-- 右侧飞入 -->
-    <span class="bf bf--r" style="--dur:2.4s;--delay:.15s;--y0:-12vh;--y1:-18vh;--y2:-14vh;--cx:24vw;--cy:-17vh;--s:.90;--dx:26vw;--dy:-20vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--r" style="--dur:2.7s;--delay:.35s;--y0:6vh;--y1:12vh;--y2:8vh;--cx:16vw;--cy:20vh;--s:.75;--dx:16vw;--dy:20vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--r" style="--dur:2.2s;--delay:.50s;--y0:0vh;--y1:-8vh;--y2:-4vh;--cx:33vw;--cy:-2vh;--s:1.00;--dx:30vw;--dy:-8vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--r" style="--dur:2.6s;--delay:.65s;--y0:-16vh;--y1:-8vh;--y2:-12vh;--cx:13vw;--cy:-28vh;--s:.80;--dx:10vw;--dy:-26vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-    <span class="bf bf--r" style="--dur:2.3s;--delay:.85s;--y0:14vh;--y1:6vh;--y2:10vh;--cx:21vw;--cy:12vh;--s:.95;--dx:24vw;--dy:22vh">
-      <span class="bf__float"><img class="bf__img" src="assets/butterfly.png?v=20261015m" alt="" aria-hidden="true" draggable="false" decoding="async"></span>
-    </span>
-  </div>
-
-  <div class="intro__card">
+    <div class="intro__card">
     <p class="intro__eyebrow">SHOREKEEPER&rsquo;S HARBOR</p>
-    <h1 class="intro__title">守岸人的港湾</h1>
+    <h1 class="intro__title">漂泊的终点</h1>
     <p class="intro__sub">在这里，时间如潮水般流转，而我为你守望</p>
     <button class="enter-btn" id="enterBtn" type="button">进 入</button>
     <p class="intro__hint">点击任意处进入 · 进入后自动播放背景音乐</p>
@@ -136,7 +105,7 @@
     <div class="about">
       <div class="about__avatar reveal">
         <!-- ✏️ 换成你的头像：把图片命名为 avatar.jpg 放进 assets/ 即可，尺寸建议 1:1 -->
-        <img src="assets/avatar.jpg?v=20261015m" alt="我的头像" width="240" height="240" loading="lazy">
+        <img src="assets/avatar.jpg?v=20261015o" alt="我的头像" width="240" height="240" loading="lazy">
       </div>
 
       <div class="about__body reveal">
@@ -269,10 +238,10 @@
     <span class="pet__art">
       <span class="pet__puppet">
         <span class="pet__chew">
-          <img draggable="false" class="pet__layer pet__leg pet__leg--l" src="assets/pet-leg-l.png?v=20261015m" alt="" aria-hidden="true" decoding="async">
-          <img draggable="false" class="pet__layer pet__leg pet__leg--r" src="assets/pet-leg-r.png?v=20261015m" alt="" aria-hidden="true" decoding="async">
-          <img draggable="false" class="pet__layer pet__lower" src="assets/pet-lower.png?v=20261015m" alt="" aria-hidden="true" decoding="async">
-          <img draggable="false" class="pet__layer pet__upper" src="assets/pet-upper.png?v=20261015m" alt="" decoding="async">
+          <img draggable="false" class="pet__layer pet__leg pet__leg--l" src="assets/pet-leg-l.png?v=20261015o" alt="" aria-hidden="true" decoding="async">
+          <img draggable="false" class="pet__layer pet__leg pet__leg--r" src="assets/pet-leg-r.png?v=20261015o" alt="" aria-hidden="true" decoding="async">
+          <img draggable="false" class="pet__layer pet__lower" src="assets/pet-lower.png?v=20261015o" alt="" aria-hidden="true" decoding="async">
+          <img draggable="false" class="pet__layer pet__upper" src="assets/pet-upper.png?v=20261015o" alt="" decoding="async">
         </span>
       </span>
     </span>
@@ -280,6 +249,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=20261015m"></script>
+<script src="js/main.js?v=20261015o"></script>
 </body>
 </html>
