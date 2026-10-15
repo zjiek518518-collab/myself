@@ -328,6 +328,13 @@
     })(0);
   }
 
+  // 贴边定位：盒子贴到屏幕边（躲藏量交给 CSS 的 translateX）
+  function placeDocked(side) {
+    if (!pet) return;
+    var w = pet.getBoundingClientRect().width || 168;
+    pet.style.left = (side === 'l' ? 4 : window.innerWidth - w - 4) + 'px';
+  }
+
   function dockTo(side) {
     if (!pet || !side) return;
     dockedSide = side;
@@ -343,10 +350,7 @@
     walkX = 0;
     walkY = 0;
     pausedUntil = Date.now() + 3600000;                          // 常驻期间不自己乱跑
-    pet.style.left = (side === 'l' ? 4 : window.innerWidth - 200) + 'px';
-    alignToEdge(side);                                           // 靠姿已生效，形变参与对齐
-    setTimeout(function () { if (dockedSide === side) alignToEdge(side); }, 320);
-    setTimeout(function () { if (dockedSide === side) alignToEdge(side); }, 950);
+    placeDocked(side);                                           // 盒子贴边；「只露脑袋」由 CSS 位移完成
     petSay(pick(['我就在这儿待着。', '靠着边舒服。', '这儿视野不错。']), 2600);
   }
 
@@ -813,7 +817,7 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
       if (!clinging) return;
-      alignToEdge(clinging);
+      placeDocked(clinging);
     }, 160);
   });
 
@@ -824,7 +828,7 @@
     if (!pet.classList.contains(want) || clinging !== dockedSide) {
       clinging = dockedSide;
       pet.classList.add(want);
-      alignToEdge(dockedSide);
+      placeDocked(dockedSide);
     }
   }, 800);
 
