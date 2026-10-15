@@ -309,7 +309,7 @@
     clinging = '';
     clearTimeout(clingTimer);
     clearTimeout(edgeTimer);
-    pet.classList.remove('pet--edge-l', 'pet--edge-r', 'is-edgesit', 'is-edgepeek');
+    pet.classList.remove('pet--edge-l', 'pet--edge-r', 'is-edgesit', 'is-edgepeek', 'is-leaning');
     pet.style.setProperty('--walk-dur', '.45s');
     var r = pet.getBoundingClientRect();
     var w = pet.offsetWidth || 168;
@@ -368,6 +368,7 @@
     pausedUntil = Date.now() + 900000;          // 贴在边上时不乱跑
     petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
     // 只有「手动拖到边上」才会靠边，而且常驻：点她一下才出来
+    pet.classList.add('is-leaning');          // 常驻姿势：一直靠着边
     scheduleEdgeAction(2600);
     return true;
   }
@@ -501,12 +502,10 @@
       // 先核实她确实还在边缘：位置跑偏时就别再摆姿势了
       if (clinging && !atEdge(clinging)) { releaseCling(true); return; }
       if (clinging && !document.hidden && !petMenuIsOpen() && !pet.classList.contains('is-dragging')) {
-        var sit = Math.random() < 0.5;
-        var cls = sit ? 'is-edgesit' : 'is-edgepeek';
+        var cls = 'is-edgepeek';                 // 靠着坐已是常驻姿势，这里只偶尔探头
         pet.classList.add(cls);
-        if (sit && Math.random() < 0.55) petSay(pick(['靠着边坐会儿。', '这儿风小一点。', '歇一下。']), 2400);
-        else if (!sit && Math.random() < 0.5) petSay(pick(['有人吗？', '我看看。', '……']), 1600);
-        setTimeout(function () { pet.classList.remove(cls); }, sit ? 5400 : 3600);
+        if (Math.random() < 0.5) petSay(pick(['有人吗？', '我看看。', '……']), 1600);
+        setTimeout(function () { pet.classList.remove(cls); }, 3600);
       }
       scheduleEdgeAction(6000 + Math.random() * 7000);
     }, delay || (4000 + Math.random() * 4000));
