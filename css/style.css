@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015c) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015d) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015c) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015d) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -941,14 +941,17 @@ body.is-entered .pet__enter {
 .pet--edge-r .pet__speech { left: auto; right: calc(100% + 10px); width: 178px; }
 
 /* 贴边专属动作：靠着边坐一会儿 / 偶尔探头 */
-.pet--edge-l { --edge-lean: -6deg; --edge-peek-x: -76px; }
-.pet--edge-r { --edge-lean: 6deg; --edge-peek-x: 76px; }
+.pet--edge-l { --edge-lean: 7deg;  --edge-peek-x: -76px; }   /* 背靠左边、身体朝里倾 */
+.pet--edge-r { --edge-lean: -7deg; --edge-peek-x: 76px; }  /* 背靠右边、身体朝里倾 */
 
 /* 坐下：整个人矮下去、微微横向摊开，并朝边那侧靠 */
-.pet.is-edgesit .pet__chew { animation: petEdgeSit 5.4s var(--ease); }
+.pet.is-edgesit .pet__chew {
+  transform-origin: 50% 100%;          /* 轴心放脚下，才像「靠着」而不是「翻倒」 */
+  animation: petEdgeSit 5.4s var(--ease);
+}
 @keyframes petEdgeSit {
   0%       { transform: none; }
-  14%, 76% { transform: translateY(15px) scale(1.06, .86) rotate(var(--edge-lean, 0deg)); }
+  14%, 76% { transform: translateY(13px) scale(1.05, .87) rotate(var(--edge-lean, 0deg)); }
   88%      { transform: translateY(2px) scale(1.01, .98); }
   100%     { transform: none; }
 }
