@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015t) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015u) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015t) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015u) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1322,7 +1322,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 /* 翅膀扇动：以身体为轴横向折叠/展开 */
 .swirl__bf {
   position: absolute;
-  left: -235px;              /* 圆心左侧 R=140 + 半径 95 */
+  left: -267px;              /* 圆心左侧 R=172 + 半径 95 */
   top: -95px;
   width: 190px;
   max-width: none;
@@ -1335,7 +1335,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
           drop-shadow(0 0 30px rgba(80, 190, 255, .75))
           drop-shadow(0 0 60px rgba(40, 120, 255, .45));
 }
-.swirl--r .swirl__bf { left: 45px; animation-delay: .09s; }   /* 圆心右侧 R=140 处 */
+.swirl--r .swirl__bf { left: 77px; animation-delay: .09s; }   /* 圆心右侧 R=140 处 */
 @keyframes bfFlap {
   from { transform: scaleX(1)    rotate(-3deg); }
   to   { transform: scaleX(.42)  rotate(3deg); }
@@ -1379,7 +1379,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 
 /* 进入后的页面：整体背景＝新风景图（漂泊的终点） */
 .hero, .main {
-  background-image: url(../assets/bg-main.jpg?v=20261015t);
+  background-image: url(../assets/bg-main.jpg?v=20261015u);
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
@@ -1387,15 +1387,15 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 }
 @media (max-width: 900px) {
   .main, .about { background-attachment: scroll; }
-  .swirl__bf { left: -158px; top: -59px; width: 118px; height: 118px; }
-  .swirl--r .swirl__bf { left: 40px; }
+  .swirl__bf { left: -178px; top: -59px; width: 118px; height: 118px; }
+  .swirl--r .swirl__bf { left: 60px; }
 }
 
 
 /* 个人主页 / 自我介绍那一段：用回原来的守岸人立绘（压深一层保证文字可读） */
 section#about {
   background-image: linear-gradient(rgba(6, 14, 26, .86), rgba(6, 14, 26, .92)),
-                    url(../assets/bg.jpg?v=20261015t);
+                    url(../assets/bg.jpg?v=20261015u);
   background-size: cover, cover;
   background-position: center center, center 26%;
   background-repeat: no-repeat, no-repeat;
