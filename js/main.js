@@ -333,6 +333,7 @@
     // 自愈：对齐完成后重新确认贴边状态与姿势，防止被别的逻辑误清
     if (!clinging) clinging = side;
     pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
+    pet.classList.add('is-leaning');          // 先进入靠着姿势，再对齐（形变参与计算）
     pet.classList.add('is-leaning');
     var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
     pet.style.bottom = bottom + 'px';
@@ -347,7 +348,7 @@
     petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
     // 只有「手动拖到边上」才会靠边，而且常驻：点她一下才出来
     pet.classList.add('is-leaning');          // 常驻姿势：一直靠着边
-    scheduleEdgeAction(2600);
+    // 她要一直靠着：不再安排探头等会打断姿势的动作
     return true;
   }
 
