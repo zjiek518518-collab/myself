@@ -367,8 +367,7 @@
     clearTimeout(wanderTimer);
     pausedUntil = Date.now() + 900000;          // 贴在边上时不乱跑
     petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
-    clearTimeout(clingTimer);
-    clingTimer = setTimeout(function () { releaseCling(true); }, 70000 + Math.random() * 40000);
+    // 贴边是常驻的：不会再自己出来，只有再点她一下才出来（见 petBtn 的 click）
     scheduleEdgeAction(2600);
     return true;
   }
@@ -642,6 +641,10 @@
     petBtn.addEventListener('click', function () {
       // 刚拖完的那一下不算“点击”
       if (pet && pet.dataset.dragged === '1') return;
+      if (clinging) {                       // 正贴着边：点一下＝出来，继续溜达
+        releaseCling();
+        return;
+      }
       updatePetFlip();
       var willOpen = !petMenuIsOpen();
       openPetMenu(willOpen);
@@ -700,7 +703,6 @@
     petBtn.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       e.preventDefault();                            // 阻止选中文字 / 触发图片原生拖拽
-      if (clinging) releaseCling(true);              // 抓住她就先松手站起来
       freezeWalk();                                  // 先把走动偏移并进 left/bottom
       var r = pet.getBoundingClientRect();
       dragging = true;
@@ -721,6 +723,7 @@
       if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;   // 小抖动不算拖动
       if (!moved) {
         moved = true;
+        if (clinging) releaseCling(true);    // 真的开始拖了才让她站起来
         pet.classList.add('is-dragging');
         openPetMenu(false);
       }
