@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015w) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015x) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261015w) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261015x) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1379,12 +1379,13 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 
 /* 进入后的页面：整体背景＝新风景图（漂泊的终点） */
 .hero, .main {
-  /* 进入后的页面主背景：守岸人立绘（沿用原来的取景位置） */
-  background-image: url(../assets/bg.jpg?v=20261015w);
-  background-size: cover;
-  background-position: center 22%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  /* 整页一张连续背景（fixed+cover，滚动时完全不位移）＋统一压暗，避免段落之间接不上 */
+  background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
+                    url(../assets/bg.jpg?v=20261015x);
+  background-size: cover, cover;
+  background-position: center center, center 22%;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
 }
 @media (max-width: 900px) {
   .main, .about { background-attachment: scroll; }
@@ -1393,14 +1394,11 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 }
 
 
-/* 个人主页 / 自我介绍那一段：用回原来的守岸人立绘（压深一层保证文字可读） */
-section#about {
-  background-image: linear-gradient(rgba(6, 14, 26, .86), rgba(6, 14, 26, .92)),
-                    url(../assets/bg.jpg?v=20261015w);
-  background-size: cover, cover;
-  background-position: center center, center 26%;
-  background-repeat: no-repeat, no-repeat;
 }
-@media (max-width: 900px) {
-  section#about { background-attachment: scroll; }
+
+
+/* 自我介绍段：不再单独铺图，只加一层很淡的暗色收边，和整页背景自然过渡 */
+section#about {
+  background-image: linear-gradient(rgba(4, 10, 20, .45), rgba(4, 10, 20, .55));
+  background-repeat: no-repeat;
 }
