@@ -300,6 +300,7 @@
 
   /* ---------- 贴边：拖到左右边缘就停在边上（正常站着、转身朝屏幕里侧） ---------- */
   var clinging = '';        // '' | 'l' | 'r'
+  var lastDropAt = 0;       // 刚拖放到边上的时刻（用来忽略拖放余波的那次 click）
   var edgeTimer = 0;        // 贴边专属动作的计时器
   var EDGE_NEAR = 64;       // 盒子离边缘这么近就吸附
   var clingTimer = 0;
@@ -628,6 +629,7 @@
       // 刚拖完的那一下不算“点击”
       if (pet && pet.dataset.dragged === '1') return;
       if (clinging) {                       // 正贴着边：点一下＝出来，继续溜达
+        if (Date.now() - lastDropAt < 600) return;   // 拖放后的余波 click 不算「点她」
         releaseCling();
         return;
       }
@@ -732,6 +734,7 @@
       pet.classList.add('is-dropping');                 // 落地压一下
       setTimeout(function () { pet.classList.remove('is-dropping'); }, 420);
       pet.dataset.dragged = '1';                 // 让紧随其后的 click 不打开菜单
+      lastDropAt = Date.now();
       freezeWalk();
       savePos();
       updatePetFlip();
