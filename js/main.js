@@ -320,6 +320,7 @@
       var ur = u.getBoundingClientRect();
       var delta = (side === 'l') ? (ur.left - DOCK_PAD) : (vw - DOCK_PAD - ur.right);
       if (Math.abs(delta) < 1) return;
+      if (Math.abs(delta) > 400) return;                 // 异常值直接放弃，绝不让它跑飞
       pet.style.left = ((parseFloat(pet.style.left) || 0) - delta) + 'px';
       if (n < 8) requestAnimationFrame(function () { loop(n + 1); });
     })(0);
@@ -342,6 +343,8 @@
     pausedUntil = Date.now() + 3600000;                          // 常驻期间不自己乱跑
     pet.style.left = (side === 'l' ? 4 : window.innerWidth - 200) + 'px';
     alignToEdge(side);                                           // 靠姿已生效，形变参与对齐
+    setTimeout(function () { if (dockedSide === side) alignToEdge(side); }, 320);
+    setTimeout(function () { if (dockedSide === side) alignToEdge(side); }, 950);
     petSay(pick(['我就在这儿待着。', '靠着边舒服。', '这儿视野不错。']), 2600);
   }
 
