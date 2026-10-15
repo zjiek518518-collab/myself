@@ -329,6 +329,10 @@
         requestAnimationFrame(function () { alignLoop(tries + 1); });
       }
     })();
+    // 自愈：对齐完成后重新确认贴边状态与姿势，防止被别的逻辑误清
+    if (!clinging) clinging = side;
+    pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
+    pet.classList.add('is-leaning');
     var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
     pet.style.bottom = bottom + 'px';
     pet.classList.toggle('is-facing-left', side === 'l');
@@ -474,6 +478,16 @@
     edgeTimer = setTimeout(function () {
       // 先核实她确实还在边缘：位置跑偏时就别再摆姿势了
       if (clinging && !atEdge(clinging)) { releaseCling(true); return; }
+      // 自愈：只要还站在边缘附近，就把贴边状态补回来
+      (function selfHeal() {
+        var u = pet.querySelector('.pet__upper');
+        if (!u) return;
+        var ur = u.getBoundingClientRect();
+        var vwS = window.innerWidth;
+        if (ur.left <= 8) { clinging = 'l'; pet.classList.add('pet--edge-l'); }
+        else if (ur.right >= vwS - 8) { clinging = 'r'; pet.classList.add('pet--edge-r'); }
+        if (clinging) pet.classList.add('is-leaning');
+      })();
       if (clinging && !document.hidden && !petMenuIsOpen() && !pet.classList.contains('is-dragging')) {
         var cls = 'is-edgepeek';                 // 靠着坐已是常驻姿势，这里只偶尔探头
         pet.classList.add(cls);
