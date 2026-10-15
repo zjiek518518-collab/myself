@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015o) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015p) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015o) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015p) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1311,17 +1311,21 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
   top: 0;
   width: 0;
   height: 0;
-  animation: swirlSpin 2.6s linear infinite;
+  animation: swirlSpin 3.2s linear infinite;
 }
 .swirl--r .swirl__orbit { animation-direction: reverse; }
-@keyframes swirlSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes swirlSpin {
+  from { transform: scaleY(.5) rotate(0deg); }
+  to   { transform: scaleY(.5) rotate(360deg); }
+}
 .swirl__bf {
   position: absolute;
   left: -70px;
-  top: -70px;
+  top: -160px;               /* 圆心上方 R=90 处 */
   width: 140px;
   max-width: none;
   height: 140px;
+  transform: scaleY(2);      /* 抵消轨道的压扁，蝴蝶本身不变形 */
   -webkit-user-drag: none;
   user-select: none;
   filter: drop-shadow(0 0 10px rgba(150, 225, 255, .95))
@@ -1329,7 +1333,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
           drop-shadow(0 0 60px rgba(40, 120, 255, .45));
 }
 /* 两只错开 180°：一只在轨道上方、一只在下方 */
-.swirl--r .swirl__bf { top: 70px; }
+.swirl--r .swirl__bf { top: 20px; }   /* 圆心下方 R=90 处（与上一只恒隔 180°） */
 
 /* 标题更大，并且等蝴蝶汇聚之后再出现 */
 .intro__title {
@@ -1344,7 +1348,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 
 /* 进入后的页面背景换成新的风景图 */
 .main {
-  background-image: url(../assets/bg-main.jpg?v=20261015o);
+  background-image: url(../assets/bg-main.jpg?v=20261015p);
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
@@ -1352,6 +1356,6 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 }
 @media (max-width: 900px) {
   .main { background-attachment: scroll; }
-  .swirl__bf { left: -52px; top: -52px; width: 104px; height: 104px; }
-  .swirl--r .swirl__bf { top: 52px; }
+  .swirl__bf { left: -40px; top: -100px; width: 80px; height: 80px; transform: scaleY(2); }
+  .swirl--r .swirl__bf { top: 20px; }
 }
