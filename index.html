@@ -38,14 +38,31 @@
       <stop offset="0.40" stop-color="#5cc8f7"/>
       <stop offset="1" stop-color="#2a5fce"/>
     </linearGradient>
+    <radialGradient id="bfGlowGrad" gradientUnits="userSpaceOnUse" cx="50" cy="46" r="54">
+      <stop offset="0" stop-color="#fffdf0" stop-opacity="1"/>
+      <stop offset="0.16" stop-color="#f2feff" stop-opacity="1"/>
+      <stop offset="0.40" stop-color="#8fe8ff" stop-opacity=".95"/>
+      <stop offset="0.66" stop-color="#3aa6f0" stop-opacity=".78"/>
+      <stop offset="0.86" stop-color="#2a5fd0" stop-opacity=".4"/>
+      <stop offset="1" stop-color="#1b3f9a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bfCoreGrad" gradientUnits="userSpaceOnUse" cx="50" cy="45" r="15">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#fff8d6" stop-opacity=".95"/>
+      <stop offset="0.75" stop-color="#bff0ff" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#9fe8ff" stop-opacity="0"/>
+    </radialGradient>
+
     <g id="bfWingL">
-      <!-- 前翅：窄长上翘，前缘一道深蓝 -->
+      <!-- 发光半透明的翅：中心白黄 → 青蓝 → 边缘渐隐 -->
+      <path d="M50 34 C38 23 23 9 11 1 C17 17 23 35 31 49 C38 51 45 48 50 46 Z" fill="url(#bfGlowGrad)"/>
       <path d="M50 34 C38 23 23 9 11 1 C17 17 23 35 31 49 C38 51 45 48 50 46 Z"
-            fill="url(#bfGradFore)" stroke="rgba(238,253,255,.9)" stroke-width="1.2" stroke-linejoin="round" opacity=".96"/>
-      <path d="M50 34 C38 23 23 9 11 1" fill="none" stroke="#12305a" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>
-      <!-- 后翅：向后下方收，带小尾尖 -->
+            fill="none" stroke="rgba(236,252,255,.45)" stroke-width=".9" stroke-linejoin="round"/>
+      <path d="M50 50 C40 53 30 57 24 63 C18 71 20 83 27 87 C37 80 46 68 50 60 Z" fill="url(#bfGlowGrad)"/>
       <path d="M50 50 C40 53 30 57 24 63 C18 71 20 83 27 87 C37 80 46 68 50 60 Z"
-            fill="url(#bfGradHind)" stroke="rgba(228,249,255,.75)" stroke-width="1.2" stroke-linejoin="round" opacity=".95"/>
+            fill="none" stroke="rgba(226,248,255,.35)" stroke-width=".9" stroke-linejoin="round"/>
+      <!-- 翅根那圈亮芯 -->
+      <ellipse cx="48" cy="46" rx="10" ry="14" fill="url(#bfCoreGrad)"/>
     </g>
   </defs>
 </svg>

@@ -171,7 +171,9 @@ body.is-entered .intro {
   position: absolute;
   left: 0;
   top: 0;
-  filter: drop-shadow(0 0 4px rgba(200, 244, 255, .85)) drop-shadow(0 0 13px rgba(77, 163, 255, .5));
+  filter: drop-shadow(0 0 5px rgba(210, 248, 255, .95))
+          drop-shadow(0 0 15px rgba(96, 205, 255, .8))
+          drop-shadow(0 0 34px rgba(52, 140, 255, .5));
   animation: bob 3.4s ease-in-out infinite alternate;
   animation-delay: calc(var(--delay, 0s) + var(--dur, 2.4s) - .2s);
 }
@@ -198,13 +200,19 @@ body.is-entered .intro {
 
 .bf__body {
   position: absolute;
-  left: -2.25px;
-  top: -12px;
-  width: 4.5px;
-  height: 23px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #f6fdff, var(--blue-300) 55%, var(--blue-500));
-  box-shadow: 0 0 7px rgba(190, 240, 255, .95), 0 0 16px rgba(77, 163, 255, .6);
+  left: -5px;
+  top: -14px;
+  width: 10px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%,
+    #ffffff 0%, #fff6d0 30%, rgba(159, 232, 255, .85) 62%, rgba(127, 216, 255, 0) 100%);
+  box-shadow: 0 0 10px rgba(255, 250, 220, .9), 0 0 24px rgba(127, 216, 255, .7), 0 0 46px rgba(60, 150, 255, .35);
+  animation: bfCore 3.2s ease-in-out infinite alternate;
+}
+@keyframes bfCore {
+  from { opacity: .78; transform: scale(.9); }
+  to   { opacity: 1;   transform: scale(1.12); }
 }
 
 @keyframes flapL { from { transform: rotate(-3deg) scaleX(1); } to { transform: rotate(2.5deg) scaleX(.86); } }
