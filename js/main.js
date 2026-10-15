@@ -333,7 +333,7 @@
     return side === 'l' ? r.left <= 20 : r.right >= window.innerWidth - 20;
   }
 
-  function tryCling(auto) {
+  function tryCling() {
     if (!pet) return false;
     var r = pet.getBoundingClientRect();
     var vw = window.innerWidth;
@@ -367,12 +367,8 @@
     clearTimeout(wanderTimer);
     pausedUntil = Date.now() + 900000;          // 贴在边上时不乱跑
     petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
+    // 只有「手动拖到边上」才会靠边，而且常驻：点她一下才出来
     scheduleEdgeAction(2600);
-    if (auto) {
-      // 自己溜达过去的：待一会儿就走开（只有你手动拖过去才会一直靠着）
-      clearTimeout(clingTimer);
-      clingTimer = setTimeout(function () { releaseCling(true); }, 18000 + Math.random() * 8000);
-    }
     return true;
   }
 
@@ -534,15 +530,8 @@
     var h = pet.offsetHeight || 165;
 
     // 满屏都能去（留一点边距）
-    var targetLeft, targetBottom;
-    if (Math.random() < 0.38) {
-      // 有约四成概率往左右边上去（贴着边走，看起来更像在巡视自己的港湾）
-      targetLeft = Math.random() < 0.5 ? 5 : Math.max(5, vw - home.w - 5);
-      targetBottom = 6 + Math.random() * Math.max(1, vh - h - 12) * 0.5;
-    } else {
-      targetLeft = 6 + Math.random() * Math.max(1, vw - home.w - 12);
-      targetBottom = 6 + Math.random() * Math.max(1, vh - h - 12);
-    }
+    var targetLeft = 6 + Math.random() * Math.max(1, vw - home.w - 12);
+    var targetBottom = 6 + Math.random() * Math.max(1, vh - h - 12);
 
     var dx = (targetLeft - home.left) - walkX;
     var dy = (targetBottom - home.bottom) - walkY;
@@ -593,11 +582,6 @@
       setTimeout(function () { pet.classList.remove('is-settling'); }, 320);
       walking = false;
       updatePetFlip();
-      // 刚好停在边缘附近：顺势靠上去（自动靠边 18~26 秒后会自己走开）
-      var er = pet.getBoundingClientRect();
-      if (er.left <= 46 || er.right >= window.innerWidth - 46) {
-        if (tryCling(true)) return;
-      }
       if (Math.random() < 0.4 && !petMenuIsOpen()) petSay(pick(PET_WALK_LINES), 2600);
       scheduleWander();
     }
