@@ -1,18 +1,20 @@
-# 本地预览、临时文件，不会上传到 GitHub
-_dev-preview/
-
-# 单文件版会把图片和音乐内嵌进去（7 MB），只在本机用，不用上传
+# 单文件版：图片和音乐都内嵌在里面（7 MB），只在本机用，不用上传
 守岸人的港湾-单文件版.html
 
-# 系统垃圾文件
+# 原始素材副本 / 无用文件（站点实际用的是 assets/ 里的那两份）
+/bg.jpg
+/bg.jpg.jpg
+/bgm.mp3
+index.html.txt
+
+# 本地预览与临时产物
+_dev-preview/
+_pet-preview/
+
+# 系统 / 编辑器垃圾
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# 编辑器
 .vscode/
 .idea/
 *.log
-
-# �в�ű���Ԥ�����
-_pet-preview/
