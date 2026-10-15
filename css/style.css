@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261017D) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261017F) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261017D) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261017F) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1381,7 +1381,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .hero, .main {
   /* 整页一张连续背景（fixed+cover，滚动时完全不位移）＋统一压暗，避免段落之间接不上 */
   background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                    url(../assets/bg.jpg?v=20261017D);
+                    url(../assets/bg.jpg?v=20261017F);
   background-size: cover, cover;
   background-position: center center, center 22%;
   background-repeat: no-repeat, no-repeat;
@@ -1394,7 +1394,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 }
 
 
-}
+
 
 
 /* 自我介绍段：不再单独铺图，只加一层很淡的暗色收边，和整页背景自然过渡 */
@@ -1498,7 +1498,7 @@ section#about {
   72%  { opacity: .82; transform: scale(1.34); }
   100% { opacity: 0; transform: scale(1.78); }
 }     /* 绽开、变亮、消散 */
-}
+
 .bloom__bf {
   position: absolute;
   left: -105px;
@@ -1520,9 +1520,9 @@ section#about {
 
 
 
-}
-}
-}
+
+
+
 
 
 /* 小蝴蝶翅膀：与外飞分层，避免 transform 互相覆盖 */
@@ -1540,3 +1540,35 @@ section#about {
 
 /* 进入按钮：淡入 + 轻微放大，与绽放的光自然衔接 */
 .enter-btn { animation-timing-function: cubic-bezier(.22, .68, .3, 1) !important; }
+
+/* ===== 开场：两蝶汇聚成大蝴蝶并绽放（放在最后，保证生效） ===== */
+.bloom { position: absolute; left: 50%; top: 62%; width: 0; height: 0; pointer-events: none; }
+.bloom__grow {
+  display: block; position: absolute; left: 0; top: 0; width: 0; height: 0;
+  opacity: 0;
+  animation: bloomLife 2.7s cubic-bezier(.22, .68, .3, 1) 3.85s forwards;
+}
+@keyframes bloomLife {
+  0%   { opacity: 0; transform: scale(.42); }
+  22%  { opacity: 1; transform: scale(.96); }
+  46%  { opacity: 1; transform: scale(1.02); }
+  72%  { opacity: .82; transform: scale(1.34); }
+  100% { opacity: 0; transform: scale(1.78); }
+}
+.bloom__bf {
+  position: absolute;
+  left: -105px; top: -105px;
+  width: 210px; height: 210px;
+  max-width: none;
+  display: block;
+  -webkit-user-drag: none; user-select: none;
+  transform-origin: 50% 50%;
+  animation: bfFlap .2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 16px rgba(155, 228, 255, .95))
+          drop-shadow(0 0 44px rgba(80, 190, 255, .7))
+          drop-shadow(0 0 90px rgba(40, 120, 255, .45));
+}
+.enter-btn { animation-timing-function: cubic-bezier(.22, .68, .3, 1) !important; }
+@media (max-width: 900px) {
+  .bloom__bf { left: -66px; top: -66px; width: 132px; height: 132px; }
+}
