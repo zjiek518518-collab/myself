@@ -346,10 +346,16 @@
     clinging = side;
     pet.classList.remove('pet--edge-l', 'pet--edge-r');
     pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
-    var w = pet.offsetWidth || 168;
     var h = pet.offsetHeight || 165;
-    // 正常站着贴到边上，并把脸转向屏幕里侧
-    pet.style.left = (side === 'l' ? 4 : vw - w - 4) + 'px';
+    // 先给个初值，再按「真实渲染位置」量一次并校正——offsetWidth 有时比实际宽，
+    // 直接用宽度算会留出一条缝（就是「没贴到边」的原因）
+    pet.style.left = (side === 'l' ? 4 : vw - 240) + 'px';
+    (function snap() {
+      var rr = pet.getBoundingClientRect();
+      var cur = parseFloat(pet.style.left) || 0;
+      if (side === 'l') pet.style.left = (cur - (rr.left - 4)) + 'px';
+      else pet.style.left = (cur + (vw - 3 - rr.right)) + 'px';
+    })();
     var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
     pet.style.bottom = bottom + 'px';
     pet.classList.toggle('is-facing-left', side === 'l');
@@ -791,7 +797,8 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
       if (!clinging) return;
-      pet.style.left = (clinging === 'l' ? 4 : window.innerWidth - (pet.offsetWidth || 168) - 4) + 'px';
+      var vw2 = window.innerWidth, rr2 = pet.getBoundingClientRect(), cur2 = parseFloat(pet.style.left) || 0;
+      pet.style.left = (clinging === 'l' ? cur2 - (rr2.left - 4) : cur2 + (vw2 - 3 - rr2.right)) + 'px';
     }, 160);
   });
 
