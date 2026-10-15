@@ -809,19 +809,28 @@ body.is-entered .pet__enter {
   transition: transform .4s var(--ease);
 }
 
-/* ---------- 纸片人分层（上半身 / 下半身 / 双腿 / 闭眼 / 咬口） ---------- */
+/* ---------- 纸片人分层（上半身 / 下半身 / 双腿 / 西瓜） ---------- */
+/* 关键：多层不同周期的微动叠加，才不会像一块纸板 */
 .pet__puppet {
   position: relative;
   display: block;
   transform-origin: 50% 94%;
-  animation: petBreathe 5.2s ease-in-out infinite;    /* 待机：呼吸 + 轻轻晃 */
+  animation: petBreathe 5.2s ease-in-out infinite;
 }
 @keyframes petBreathe {
-  0%, 100% { transform: translateY(0) rotate(-1.1deg); }
-  50%      { transform: translateY(-2.5px) rotate(1.1deg); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2.5px); }
 }
-/* 身体比例固定，各层绝对定位叠放 */
-.pet__chew { position: relative; display: block; aspect-ratio: 460 / 449; }
+.pet__chew {
+  position: relative;
+  display: block;
+  aspect-ratio: 460 / 449;
+  animation: petWeight 9.7s ease-in-out infinite alternate;   /* 重心左右移（最慢） */
+}
+@keyframes petWeight {
+  0%   { transform: translateX(-1.5px) rotate(-.5deg); }
+  100% { transform: translateX(1.5px) rotate(.5deg); }
+}
 .pet__layer {
   position: absolute;
   left: 0;
@@ -830,50 +839,101 @@ body.is-entered .pet__enter {
   height: auto;
 }
 
-/* 各层的旋转支点：腰 / 胯 */
-.pet__upper { transform-origin: 50% 73.7%; animation: petIdleSway 6.5s ease-in-out infinite alternate; }
-.pet__lower { transform-origin: 50% 77.5%; }
+/* 各层支点 */
+.pet__upper { transform-origin: 50% 73.7%; animation: petIdleSway 6.7s ease-in-out infinite alternate; }
+.pet__lower { transform-origin: 50% 77.5%; animation: petIdleHip 8.3s ease-in-out infinite alternate; }
 .pet__leg { transform-origin: 41.5% 78%; }
 .pet__leg--r { transform-origin: 56.1% 78%; }
+@keyframes petIdleSway { from { transform: rotate(-.7deg); } to { transform: rotate(.7deg); } }
+@keyframes petIdleHip { from { transform: rotate(.5deg); } to { transform: rotate(-.5deg); } }
 
-/* 待机时上半身也有一点点动静，不至于像块木头 */
-@keyframes petIdleSway { from { transform: rotate(-.6deg); } to { transform: rotate(.6deg); } }
-
-/* ---------- 走路：腿摆 + 髋部摆 + 上半身反向摆 + 整体起伏 ---------- */
-.pet.is-walking .pet__puppet { animation: petWalkBob .56s ease-in-out infinite; }
+/* ---------- 走路：一步一步蹦（预备 → 腾空 → 落地压缩 → 收尾过冲） ---------- */
+.pet.is-walking .pet__puppet { animation: petWalkBob .38s ease-in-out infinite; }
 @keyframes petWalkBob {
-  0%, 100% { transform: translateY(0) rotate(-.7deg); }
-  50%      { transform: translateY(-2.5px) rotate(.7deg); }
+  0%, 100% { transform: translateY(1px) scaleY(.985) scaleX(1.012); }   /* 落地压缩 */
+  40%      { transform: translateY(-5px) scaleY(1.03) scaleX(.985); }   /* 腾空拉长 */
 }
-.pet.is-walking .pet__leg--l { animation: petStepA .56s ease-in-out infinite alternate; }
-.pet.is-walking .pet__leg--r { animation: petStepB .56s ease-in-out infinite alternate; }
-@keyframes petStepA { from { transform: rotate(-6.5deg); } to { transform: rotate(6.5deg); } }
-@keyframes petStepB { from { transform: rotate(6.5deg); } to { transform: rotate(-6.5deg); } }
-.pet.is-walking .pet__lower { animation: petHip .56s ease-in-out infinite alternate; }
-@keyframes petHip { from { transform: rotate(1.5deg); } to { transform: rotate(-1.5deg); } }
-.pet.is-walking .pet__upper { animation: petTorso .56s ease-in-out infinite alternate; }
-@keyframes petTorso { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
+.pet.is-walking .pet__leg--l { animation: petStepA .76s ease-in-out infinite; }
+.pet.is-walking .pet__leg--r { animation: petStepB .76s ease-in-out infinite; }
+@keyframes petStepA { 0% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } 100% { transform: rotate(-7deg); } }
+@keyframes petStepB { 0% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } 100% { transform: rotate(7deg); } }
+.pet.is-walking .pet__lower { animation: petHip .76s ease-in-out infinite; }
+@keyframes petHip { 0%, 100% { transform: rotate(1.4deg); } 50% { transform: rotate(-1.4deg); } }
+.pet.is-walking .pet__upper { animation: petTorso .76s ease-in-out infinite; }
+@keyframes petTorso { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
 
-/* ---------- 眨眼：眼皮从上往下压（比单纯淡入淡出顺滑） ---------- */
-.pet__eyes {
-  opacity: 0;
-  transform: scaleY(.18);
-  transform-origin: 50% 33%;
-  transition: opacity .13s ease-out, transform .13s ease-out;      /* 睁开：稍慢，显得自然 */
+/* 起步前的预备（后倾下蹲）与收尾过冲 */
+.pet.is-anticipating .pet__puppet { animation: petAnticipate .26s ease-out; }
+@keyframes petAnticipate {
+  0%   { transform: translateY(0) rotate(0); }
+  100% { transform: translateY(2.5px) rotate(-2.6deg) scaleY(.97); }
 }
-.pet.is-blinking .pet__eyes {
-  opacity: 1;
-  transform: scaleY(1);
-  transition: opacity .07s ease-in, transform .07s ease-in;        /* 闭上：快 */
+.pet.is-settling .pet__puppet { animation: petSettle .3s ease-out; }
+@keyframes petSettle {
+  0%   { transform: translateY(-2px) rotate(1.8deg); }
+  100% { transform: translateY(0) rotate(0); }
 }
 
-/* ---------- 吃西瓜：咬口层 + 上半身点头咀嚼 ---------- */
-.pet__bite { opacity: 0; transition: opacity .1s linear; }
-.pet.is-eating .pet__bite { opacity: 1; }
-.pet.is-eating .pet__upper { animation: petChomp .3s ease-in-out 13; }
+/* ---------- 性格动作 ---------- */
+/* 转圈圈 */
+.pet.is-spinning .pet__chew { animation: petSpin .95s cubic-bezier(.4,0,.5,1); }
+@keyframes petSpin {
+  0%   { transform: rotate(0) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.04); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+/* 趴下休息：绕脚下转倒，贴着画面底边 */
+.pet.is-lying .pet__chew { animation: petLie 1s var(--ease) forwards; transform-origin: 12% 100%; }
+@keyframes petLie {
+  0%   { transform: rotate(0) translate(0, 0); }
+  100% { transform: rotate(82deg) translate(-6%, 4%); }
+}
+/* 蹦一下 */
+.pet.is-hopping .pet__puppet { animation: petHop .55s cubic-bezier(.3,0,.4,1); }
+@keyframes petHop {
+  0%   { transform: translateY(0) scaleY(.94) scaleX(1.05); }
+  25%  { transform: translateY(-14px) scaleY(1.06) scaleX(.96); }
+  60%  { transform: translateY(0) scaleY(.95) scaleX(1.04); }
+  100% { transform: translateY(0) scaleY(1) scaleX(1); }
+}
+/* 伸懒腰 */
+.pet.is-stretching .pet__upper { animation: petStretch 1.5s var(--ease); }
+@keyframes petStretch {
+  0%   { transform: rotate(0) translateY(0); }
+  30%  { transform: rotate(-3deg) translateY(-3px) scaleY(1.03); }
+  70%  { transform: rotate(2deg) translateY(1px); }
+  100% { transform: rotate(0) translateY(0); }
+}
+/* 歪头看你 / 开心地晃 */
+.pet.is-tilting .pet__upper { animation: petTilt 1.5s var(--ease); }
+@keyframes petTilt {
+  0%, 100% { transform: rotate(0); }
+  35%, 70% { transform: rotate(-5.5deg); }
+}
+.pet.is-cheering .pet__chew { animation: petCheer .5s ease-in-out 4; }
+@keyframes petCheer {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50%      { transform: translateY(-5px) rotate(3deg); }
+}
+/* 吃西瓜：西瓜举到嘴边（+ 咀嚼点头） */
+.pet__melon { transition: transform .45s var(--ease); }
+.pet.is-eating .pet__melon { animation: petMelonLift 4.2s var(--ease) forwards; }
+@keyframes petMelonLift {
+  0%   { transform: translateY(0) rotate(0); }
+  12%  { transform: translateY(-30px) rotate(-3deg); }
+  22%  { transform: translateY(-26px) rotate(-1deg); }
+  32%  { transform: translateY(-30px) rotate(-3deg); }
+  42%  { transform: translateY(-26px) rotate(-1deg); }
+  52%  { transform: translateY(-30px) rotate(-3deg); }
+  62%  { transform: translateY(-26px) rotate(-1deg); }
+  72%  { transform: translateY(-30px) rotate(-3deg); }
+  86%  { transform: translateY(-14px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+.pet.is-eating .pet__upper { animation: petChomp .4s ease-in-out 10; }
 @keyframes petChomp {
-  0%, 100% { transform: rotate(0deg) translateY(0); }
-  45%      { transform: rotate(2deg) translateY(1.5px); }
+  0%, 100% { transform: rotate(0deg); }
+  45%      { transform: rotate(1.8deg) translateY(1.5px); }
 }
 
 /* 朝向 */

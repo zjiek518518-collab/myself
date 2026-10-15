@@ -46,12 +46,12 @@
       setToggleState(false, '');
     }
 
-    // 桌宠：打个招呼，然后开始自己溜达 / 眨眼 / 偶尔吃口西瓜
+    // 桌宠：打个招呼，然后开始自己溜达 / 做小动作 / 偶尔吃口西瓜
     if (pet) pet.removeAttribute('inert');
     petSay('欢迎回来，这里的风很轻。', 4200);
     scheduleWander(6000);
     scheduleChat(22000);
-    scheduleBlink(1200);
+    scheduleAction(7000);
     scheduleEat(16000);
   }
 
@@ -348,29 +348,11 @@
     }, delay || (16000 + Math.random() * 16000));
   }
 
-  /* ---------- 眨眼 ---------- */
-  var petBite = document.getElementById('petBite');
-  var blinkTimer = 0;
+  /* ---------- 西瓜图层（会被举到嘴边，咬一口就真的变小） ---------- */
+  var petMelon = document.getElementById('petMelon');
+  var MELON_FRAMES = ['assets/pet-melon-1.png', 'assets/pet-melon-2.png', 'assets/pet-melon-3.png'];
 
-  function blinkOnce() {
-    if (!pet) return;
-    pet.classList.add('is-blinking');
-    setTimeout(function () { pet.classList.remove('is-blinking'); }, 100);
-  }
-
-  function scheduleBlink(delay) {
-    clearTimeout(blinkTimer);
-    if (!pet) return;
-    blinkTimer = setTimeout(function () {
-      if (!document.hidden) {
-        blinkOnce();
-        if (Math.random() < 0.22) setTimeout(blinkOnce, 260);   // 偶尔连眨两下
-      }
-      scheduleBlink(1800 + Math.random() * 4200);
-    }, delay || (1500 + Math.random() * 3000));
-  }
-
-  /* ---------- 吃西瓜 ---------- */
+  /* ---------- 吃西瓜：西瓜举到嘴边 → 咬两口 → 咀嚼 → 放下来 ---------- */
   var eatTimers = [];
   var eating = false;
 
@@ -379,28 +361,27 @@
     eatTimers = [];
     eating = false;
     if (pet) pet.classList.remove('is-eating');
-    if (petBite) petBite.classList.remove('is-show');
+    if (petMelon) petMelon.src = MELON_FRAMES[0];
   }
 
   function eatWatermelon() {
-    if (!pet || !petBite || eating || !entered) return;
+    if (!pet || !petMelon || eating || !entered) return;
     eating = true;
-    pet.classList.add('is-eating');
-    petBite.src = 'assets/pet-bite-1.png';
-    petBite.classList.add('is-show');
-    eatTimers.push(setTimeout(function () {              // 咬第二口
-      petBite.src = 'assets/pet-bite-2.png';
-      petSay(pick(['啊呜…', '嗯…']), 1500);
-    }, 900));
-    eatTimers.push(setTimeout(function () {              // 咬掉大半
-      petBite.src = 'assets/pet-bite-3.png';
-    }, 1900));
-    eatTimers.push(setTimeout(function () {              // 吃完，换回完整的一牙
-      petBite.classList.remove('is-show');
+    petMelon.src = MELON_FRAMES[0];
+    pet.classList.add('is-eating');          // 举起来 + 咀嚼由 CSS 动画负责
+    eatTimers.push(setTimeout(function () {
+      petMelon.src = MELON_FRAMES[1];        // 咬两口：西瓜真的被咬掉了
+      petSay('啊呜…', 1400);
+    }, 1100));
+    eatTimers.push(setTimeout(function () {
+      petMelon.src = MELON_FRAMES[2];        // 咬掉大半
+    }, 2100));
+    eatTimers.push(setTimeout(function () {
       pet.classList.remove('is-eating');
+      petMelon.src = MELON_FRAMES[0];
       eating = false;
       petSay(pick(PET_EAT_LINES), 2800);
-    }, 4000));
+    }, 4300));
   }
 
   var eatTimer = 0;
@@ -408,13 +389,13 @@
     clearTimeout(eatTimer);
     if (reduceMotion || petQuiet || !pet) return;
     eatTimer = setTimeout(function () {
-      if (entered && !document.hidden && !petMenuIsOpen() && !walking) eatWatermelon();
+      if (entered && !document.hidden && !petMenuIsOpen() && !walking && !acting) eatWatermelon();
       scheduleEat(26000 + Math.random() * 30000);
     }, delay || (22000 + Math.random() * 24000));
   }
 
-  // 预加载三张咬口图，切换时不闪
-  ['assets/pet-bite-1.png', 'assets/pet-bite-2.png', 'assets/pet-bite-3.png'].forEach(function (src) {
+  // 预加载三帧西瓜，切换时不闪
+  MELON_FRAMES.forEach(function (src) {
     var im = new Image();
     im.src = src;
   });
@@ -489,53 +470,123 @@
   function scheduleWander(delay) {
     clearTimeout(wanderTimer);
     if (reduceMotion || petQuiet || !pet) return;
-    wanderTimer = setTimeout(wanderStep, delay || (7000 + Math.random() * 9000));
+    wanderTimer = setTimeout(wanderStep, delay || (4500 + Math.random() * 7000));
   }
 
   function wanderStep() {
-    if (!pet || walking || !entered || petQuiet || eating || document.hidden || petMenuIsOpen() || Date.now() < pausedUntil) {
-      scheduleWander(5000);
+    if (!pet || walking || acting || !entered || petQuiet || eating || document.hidden ||
+        petMenuIsOpen() || Date.now() < pausedUntil) {
+      scheduleWander(3500);
       return;
     }
     var vw = window.innerWidth;
     var vh = window.innerHeight;
     var home = petHome();
-    var h = pet.offsetHeight || 140;
+    var h = pet.offsetHeight || 165;
 
-    // 横向随便走，纵向只在她「家」附近小幅浮动，不会跑到内容中间
-    var targetLeft = 8 + Math.random() * Math.max(1, vw - home.w - 16);
-    var targetBottom = Math.min(
-      Math.max(home.bottom + (Math.random() - 0.5) * 90, 8),
-      Math.max(8, vh - h - 8)
-    );
+    // 满屏都能去（留一点边距）
+    var targetLeft = 6 + Math.random() * Math.max(1, vw - home.w - 12);
+    var targetBottom = 6 + Math.random() * Math.max(1, vh - h - 12);
 
     var dx = (targetLeft - home.left) - walkX;
     var dy = (targetBottom - home.bottom) - walkY;
-    if (Math.abs(dx) < 24 && Math.abs(dy) < 12) { scheduleWander(4000); return; }
+    if (Math.sqrt(dx * dx + dy * dy) < 50) { scheduleWander(3000); return; }
+    startWalk(dx, dy);
+  }
 
-    // 大约 46 px/s，距离越远走得越久
+  /**
+   * 一步一步走过去：预备（后倾下蹲）→ 分步挪动（每步都有腾空/落地挤压）
+   * → 收尾过冲。这样才像在走，而不是整块图被平移。
+   */
+  function startWalk(dx, dy) {
     var dist = Math.sqrt(dx * dx + dy * dy);
-    var dur = Math.min(7, Math.max(1.4, dist / 46));
+    var steps = Math.max(2, Math.min(16, Math.round(dist / 80)));
+    var stepX = dx / steps;
+    var stepY = dy / steps;
+    var stepMs = Math.max(180, Math.min(330, 320 - steps * 9));
 
-    walkX += dx;
-    walkY += dy;
     walking = true;
-    pet.classList.add('is-walking');
     pet.classList.toggle('is-facing-left', dx < 0);
-    pet.style.setProperty('--walk-dur', dur.toFixed(2) + 's');
-    pet.style.setProperty('--wx', Math.round(walkX) + 'px');
-    // walkY 以「向上为正」，而 CSS 的 Y 轴向下为正，所以取负
-    pet.style.setProperty('--wy', Math.round(-walkY) + 'px');
+    pet.classList.add('is-anticipating');            // 预备动作
+    pet.style.setProperty('--walk-dur', (stepMs / 1000).toFixed(2) + 's');
 
     clearTimeout(walkTimer);
     walkTimer = setTimeout(function () {
-      walking = false;
+      pet.classList.remove('is-anticipating');
+      pet.classList.add('is-walking');
+      var done = 0;
+      (function step() {
+        if (done >= steps) { land(); return; }
+        done += 1;
+        walkX += stepX;
+        walkY += stepY;
+        pet.style.setProperty('--wx', Math.round(walkX) + 'px');
+        pet.style.setProperty('--wy', Math.round(-walkY) + 'px');   // CSS 的 Y 轴向下
+        updatePetFlip();
+        walkTimer = setTimeout(step, stepMs);
+      })();
+    }, 230);
+
+    function land() {
       pet.classList.remove('is-walking');
+      pet.classList.add('is-settling');              // 收尾过冲
+      setTimeout(function () { pet.classList.remove('is-settling'); }, 320);
+      walking = false;
       updatePetFlip();
-      if (Math.random() < 0.45 && !petMenuIsOpen()) petSay(pick(PET_WALK_LINES), 2600);
+      if (Math.random() < 0.4 && !petMenuIsOpen()) petSay(pick(PET_WALK_LINES), 2600);
       scheduleWander();
-    }, dur * 1000 + 140);
+    }
   }
+
+  /* ---------- 性格小动作：转圈 / 趴下 / 蹦 / 伸懒腰 / 歪头 / 开心晃动 ---------- */
+  var actionTimer = 0;
+  var acting = false;
+  var ACTIONS = ['tilt', 'hop', 'spin', 'stretch', 'cheer', 'lie'];
+  var ACTION_CLASS = {
+    tilt: 'is-tilting', hop: 'is-hopping', spin: 'is-spinning',
+    stretch: 'is-stretching', cheer: 'is-cheering', lie: 'is-lying'
+  };
+  var ACTION_MS = { hop: 700, spin: 1100, tilt: 1600, stretch: 1600, cheer: 2200, lie: 5600 };
+
+  function scheduleAction(delay) {
+    clearTimeout(actionTimer);
+    if (reduceMotion || petQuiet || !pet) return;
+    actionTimer = setTimeout(function () {
+      if (entered && !document.hidden && !petMenuIsOpen() && !walking && !eating && !acting &&
+          Date.now() >= pausedUntil) {
+        doAction(pick(ACTIONS));
+      }
+      scheduleAction(4000 + Math.random() * 5000);
+    }, delay || (3500 + Math.random() * 4000));
+  }
+
+  function doAction(name) {
+    if (!pet || acting) return;
+    var cls = ACTION_CLASS[name];
+    if (!cls) return;
+    acting = true;
+    pet.classList.add(cls);
+    if (name === 'cheer') petSay(pick(['嘿嘿。', '今天也来看我啦？', '心情不错。']), 2600);
+    else if (name === 'lie') petSay(pick(['歇一会儿…', '这片海岸很安静。']), 2400);
+    setTimeout(function () {
+      pet.classList.remove(cls);
+      acting = false;
+    }, ACTION_MS[name] || 1600);
+  }
+
+  /* ---------- 会注意到你：鼠标跑到另一边时她会转身（有时还蹦一下） ---------- */
+  var lastLookAt = 0;
+  document.addEventListener('mousemove', function (e) {
+    if (!pet || !entered || walking || eating || acting || petQuiet || petMenuIsOpen()) return;
+    var now = Date.now();
+    if (now - lastLookAt < 2500) return;
+    var r = pet.getBoundingClientRect();
+    var cx = r.left + r.width / 2;
+    if (Math.abs(e.clientX - cx) < 140) return;
+    lastLookAt = now;
+    pet.classList.toggle('is-facing-left', e.clientX < cx);
+    if (Math.random() < 0.45) doAction('hop');
+  }, { passive: true });
 
   if (petBtn) {
     petBtn.addEventListener('click', function () {
@@ -667,12 +718,13 @@
       clearTimeout(wanderTimer);
       clearTimeout(chatTimer);
       clearTimeout(walkTimer);
+      clearTimeout(actionTimer);
     } else if (entered) {
       walking = false;
       if (pet) pet.classList.remove('is-walking');
       scheduleWander(4000);
       scheduleChat(6000);
-      scheduleBlink(1500);
+      scheduleAction(5000);
       scheduleEat(12000);
     }
   });
