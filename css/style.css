@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015l) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015m) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015l) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015m) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1256,11 +1256,11 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .bf__img {
   display: block;
   position: absolute;
-  left: -33px;                 /* .bf 是 0x0 锚点，靠负边距把蝴蝶居中上去 */
-  top: -33px;
-  width: 66px;
+  left: -48px;                 /* .bf 是 0x0 锚点，靠负边距把蝴蝶居中上去 */
+  top: -48px;
+  width: 96px;
   max-width: none;             /* 全局 img{max-width:100%} 会把它压成 0，必须显式覆盖 */
-  height: 66px;
+  height: 96px;
   -webkit-user-drag: none;
   user-select: none;
   animation: bfBreath 3.4s ease-in-out infinite alternate;
@@ -1271,5 +1271,5 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 }
 
 @media (max-width: 620px) {
-  .bf__img { left: -24px; top: -24px; width: 48px; max-width: none; height: 48px; }
+  .bf__img { left: -34px; top: -34px; width: 68px; max-width: none; height: 68px; }
 }
