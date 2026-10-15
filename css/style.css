@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015h) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015i) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015h) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015i) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -945,7 +945,9 @@ body.is-entered .pet__enter {
 /* 贴边专属动作：靠着边坐一会儿 / 偶尔探头 */
 /* 两侧写同样的数值：右侧整体是镜像的（.pet__art 的 scaleX(-1)），
    镜像会把「旋转」和「横向位移」一起翻转，所以相同数值才得到对称的效果 */
-.pet--edge-l, .pet--edge-r { --edge-lean: -7deg; --edge-peek-x: 76px; }
+.pet--edge-l, .pet--edge-r { --edge-lean: 7deg; --edge-peek-x: 76px; }
+/* 说明：--edge-lean 是「朝边缘那侧靠过去」，左侧带镜像所以 CSS 值与右侧相同也能得到对称效果；
+   --edge-peek-x 正值 = 缩到屏幕外（探头），同样受镜像影响，两侧同值即对称。 */
 
 /* 坐下：整个人矮下去、微微横向摊开，并朝边那侧靠 */
 .pet.is-edgesit .pet__chew {
