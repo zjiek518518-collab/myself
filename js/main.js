@@ -352,7 +352,7 @@
     pet.style.left = (side === 'l' ? 4 : vw - w - 4) + 'px';
     var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
     pet.style.bottom = bottom + 'px';
-    pet.classList.toggle('is-facing-left', side === 'r');
+    pet.classList.toggle('is-facing-left', side === 'l');
     pet.style.setProperty('--wx', '0px');
     pet.style.setProperty('--wy', '0px');
     pet.style.setProperty('--walk-dur', '.3s');
@@ -549,7 +549,8 @@
     // 走动前先脱掉一切姿势类：绝不允许「歪着/缩着」滑行，那是「倒着走」的来源
     ['is-edgesit', 'is-edgepeek', 'is-spinning', 'is-stretching', 'is-cheering', 'is-tilting', 'is-hopping']
       .forEach(function (c) { pet.classList.remove(c); });
-    pet.classList.toggle('is-facing-left', dx < 0);
+    // 这个立绘默认偏朝「左」（刘海/视线/蝴蝶都在左侧），所以向右走时才镜像
+    pet.classList.toggle('is-facing-left', dx > 0);
     pet.classList.add('is-anticipating');            // 预备动作
     pet.style.setProperty('--walk-dur', (stepMs / 1000).toFixed(2) + 's');
 
@@ -627,7 +628,7 @@
     var cx = r.left + r.width / 2;
     if (Math.abs(e.clientX - cx) < 140) return;
     lastLookAt = now;
-    pet.classList.toggle('is-facing-left', e.clientX < cx);
+    pet.classList.toggle('is-facing-left', e.clientX > cx);
     if (Math.random() < 0.45) doAction('hop');
   }, { passive: true });
 
