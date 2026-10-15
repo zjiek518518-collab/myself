@@ -779,6 +779,8 @@ body.is-entered .main { opacity: 1; visibility: visible; }
    ============================================================= */
 .pet {
   position: fixed;
+  -webkit-user-select: none;
+  user-select: none;
   left: clamp(10px, 2.6vw, 28px);
   bottom: clamp(10px, 2.4vw, 24px);
   z-index: 34;
@@ -841,6 +843,8 @@ body.is-entered .pet__enter {
 }
 .pet__layer {
   position: absolute;
+  -webkit-user-drag: none;      /* 关键：不然真实鼠标拖动会变成浏览器拖图片 */
+  user-select: none;
   left: 0;
   top: 0;
   width: 100%;
@@ -922,26 +926,6 @@ body.is-entered .pet__enter {
 @keyframes petCheer {
   0%, 100% { transform: translateY(0) rotate(0); }
   50%      { transform: translateY(-5px) rotate(3deg); }
-}
-/* 吃西瓜：西瓜举到嘴边（+ 咀嚼点头） */
-.pet__melon { transition: transform .45s var(--ease); }
-.pet.is-eating .pet__melon { animation: petMelonLift 4.2s var(--ease) forwards; }
-@keyframes petMelonLift {
-  0%   { transform: translateY(0) rotate(0); }
-  12%  { transform: translateY(-30px) rotate(-3deg); }
-  22%  { transform: translateY(-26px) rotate(-1deg); }
-  32%  { transform: translateY(-30px) rotate(-3deg); }
-  42%  { transform: translateY(-26px) rotate(-1deg); }
-  52%  { transform: translateY(-30px) rotate(-3deg); }
-  62%  { transform: translateY(-26px) rotate(-1deg); }
-  72%  { transform: translateY(-30px) rotate(-3deg); }
-  86%  { transform: translateY(-14px) rotate(-1deg); }
-  100% { transform: translateY(0) rotate(0); }
-}
-.pet.is-eating .pet__upper { animation: petChomp .4s ease-in-out 10; }
-@keyframes petChomp {
-  0%, 100% { transform: rotate(0deg); }
-  45%      { transform: rotate(1.8deg) translateY(1.5px); }
 }
 
 /* 拖动：抓起来时抬一下、放下时落地压一下 */

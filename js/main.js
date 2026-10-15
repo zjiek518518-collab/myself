@@ -52,7 +52,6 @@
     scheduleWander(6000);
     scheduleChat(22000);
     scheduleAction(7000);
-    scheduleEat(16000);
   }
 
   if (enterBtn) enterBtn.addEventListener('click', enterSite);
@@ -294,7 +293,12 @@
 
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
 
-  /* ---------- 贴边：拖到左右边缘就扒在边上 ---------- */
+  // 图片原生拖拽会打断 pointer 事件流，导致真实鼠标「拖不动」——直接掐掉
+  document.addEventListener('dragstart', function (e) {
+    if (pet && pet.contains(e.target)) e.preventDefault();
+  });
+
+  /* ---------- 贴边：拖到左右边缘就停在边上（正常站着、转身朝屏幕里侧） ---------- */
   var clinging = '';        // '' | 'l' | 'r'
   var EDGE_NEAR = 64;       // 盒子离边缘这么近就吸附
   var clingTimer = 0;
@@ -373,7 +377,6 @@
     if (pet) pet.classList.toggle('is-menu-open', open);
     if (open) {
       pausedUntil = Date.now() + 15000;   // 菜单开着的时候先别乱跑
-      stopEating();
     }
   }
 
@@ -407,57 +410,7 @@
     }, delay || (16000 + Math.random() * 16000));
   }
 
-  /* ---------- 西瓜图层（会被举到嘴边，咬一口就真的变小） ---------- */
-  var petMelon = document.getElementById('petMelon');
-  var MELON_FRAMES = ['assets/pet-melon-1.png', 'assets/pet-melon-2.png', 'assets/pet-melon-3.png'];
 
-  /* ---------- 吃西瓜：西瓜举到嘴边 → 咬两口 → 咀嚼 → 放下来 ---------- */
-  var eatTimers = [];
-  var eating = false;
-
-  function stopEating() {
-    eatTimers.forEach(clearTimeout);
-    eatTimers = [];
-    eating = false;
-    if (pet) pet.classList.remove('is-eating');
-    if (petMelon) petMelon.src = MELON_FRAMES[0];
-  }
-
-  function eatWatermelon() {
-    if (!pet || !petMelon || eating || !entered) return;
-    eating = true;
-    petMelon.src = MELON_FRAMES[0];
-    pet.classList.add('is-eating');          // 举起来 + 咀嚼由 CSS 动画负责
-    eatTimers.push(setTimeout(function () {
-      petMelon.src = MELON_FRAMES[1];        // 咬两口：西瓜真的被咬掉了
-      petSay('啊呜…', 1400);
-    }, 1100));
-    eatTimers.push(setTimeout(function () {
-      petMelon.src = MELON_FRAMES[2];        // 咬掉大半
-    }, 2100));
-    eatTimers.push(setTimeout(function () {
-      pet.classList.remove('is-eating');
-      petMelon.src = MELON_FRAMES[0];
-      eating = false;
-      petSay(pick(PET_EAT_LINES), 2800);
-    }, 4300));
-  }
-
-  var eatTimer = 0;
-  function scheduleEat(delay) {
-    clearTimeout(eatTimer);
-    if (reduceMotion || petQuiet || clinging || !pet) return;
-    eatTimer = setTimeout(function () {
-      if (entered && !document.hidden && !petMenuIsOpen() && !walking && !acting) eatWatermelon();
-      scheduleEat(26000 + Math.random() * 30000);
-    }, delay || (22000 + Math.random() * 24000));
-  }
-
-  // 预加载三帧西瓜，切换时不闪
-  MELON_FRAMES.forEach(function (src) {
-    var im = new Image();
-    im.src = src;
-  });
 
   /* ---------- 安静模式 ---------- */
   var petQuietBtn = document.getElementById('petQuiet');
@@ -475,7 +428,6 @@
     if (petQuiet) {
       // 立刻停下来：把当前位置固定住，清掉待办，收回气泡
       releaseCling(true);
-      stopEating();
       freezeWalk();
       clearTimeout(wanderTimer);
       clearTimeout(chatTimer);
@@ -512,7 +464,6 @@
   // （走动动画进行到一半时也能正确接住，不会跳位）
   function freezeWalk() {
     if (!pet) return;
-    stopEating();                 // 被抓住的时候先别吃了
     clearTimeout(walkTimer);
     walking = false;
     pet.classList.remove('is-walking');
@@ -534,7 +485,7 @@
   }
 
   function wanderStep() {
-    if (!pet || walking || acting || clinging || !entered || petQuiet || eating || document.hidden ||
+    if (!pet || walking || acting || clinging || !entered || petQuiet || document.hidden ||
         petMenuIsOpen() || Date.now() < pausedUntil) {
       scheduleWander(3500);
       return;
@@ -612,7 +563,7 @@
     clearTimeout(actionTimer);
     if (reduceMotion || petQuiet || clinging || !pet) return;
     actionTimer = setTimeout(function () {
-      if (entered && !document.hidden && !petMenuIsOpen() && !walking && !eating && !acting &&
+      if (entered && !document.hidden && !petMenuIsOpen() && !walking && !acting &&
           Date.now() >= pausedUntil) {
         doAction(pick(ACTIONS));
       }
@@ -637,7 +588,7 @@
   /* ---------- 会注意到你：鼠标跑到另一边时她会转身（有时还蹦一下） ---------- */
   var lastLookAt = 0;
   document.addEventListener('mousemove', function (e) {
-    if (!pet || !entered || walking || eating || acting || clinging || petQuiet || petMenuIsOpen()) return;
+    if (!pet || !entered || walking || acting || clinging || petQuiet || petMenuIsOpen()) return;
     if (pet.classList.contains('is-dragging') || pet.classList.contains('is-dropping')) return;
     var now = Date.now();
     if (now - lastLookAt < 2500) return;
@@ -710,6 +661,7 @@
 
     petBtn.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();                            // 阻止选中文字 / 触发图片原生拖拽
       if (clinging) releaseCling(true);              // 抓住她就先松手站起来
       freezeWalk();                                  // 先把走动偏移并进 left/bottom
       var r = pet.getBoundingClientRect();
@@ -790,7 +742,6 @@
       scheduleWander(4000);
       scheduleChat(6000);
       scheduleAction(5000);
-      scheduleEat(12000);
     }
   });
 
