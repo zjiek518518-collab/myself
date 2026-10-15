@@ -958,6 +958,10 @@ body.is-entered .pet__enter {
 }
 .pet.is-dragging .pet__art { filter: drop-shadow(0 20px 26px rgba(0, 0, 0, .55)); }
 
+/* ---------- 贴边：拖到左右边缘就停在边上（正常站着，转身朝屏幕里侧） ---------- */
+.pet--edge-l .pet__speech { left: calc(100% + 10px); right: auto; }
+.pet--edge-r .pet__speech { left: auto; right: calc(100% + 10px); }
+
 /* 朝向 */
 .pet.is-facing-left .pet__art { transform: scaleX(-1); }
 

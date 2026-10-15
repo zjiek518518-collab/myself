@@ -294,6 +294,65 @@
 
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
 
+  /* ---------- 贴边：拖到左右边缘就扒在边上 ---------- */
+  var clinging = '';        // '' | 'l' | 'r'
+  var EDGE_NEAR = 64;       // 盒子离边缘这么近就吸附
+  var clingTimer = 0;
+
+  function releaseCling(silent) {
+    if (!clinging || !pet) return;
+    clinging = '';
+    clearTimeout(clingTimer);
+    pet.classList.remove('pet--edge-l', 'pet--edge-r');
+    pet.style.setProperty('--walk-dur', '.45s');
+    var r = pet.getBoundingClientRect();
+    var w = pet.offsetWidth || 168;
+    var h = pet.offsetHeight || 165;
+    pet.style.left = Math.min(Math.max(r.left, 4), Math.max(4, window.innerWidth - w - 4)) + 'px';
+    pet.style.bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4)) + 'px';
+    pet.style.setProperty('--wx', '0px');
+    pet.style.setProperty('--wy', '0px');
+    walkX = 0;
+    walkY = 0;
+    updatePetFlip();
+    pausedUntil = Date.now() + 3000;
+    if (!silent) petSay('站好了。', 1800);
+    scheduleWander(5000);
+  }
+
+  function tryCling() {
+    if (!pet) return false;
+    var r = pet.getBoundingClientRect();
+    var vw = window.innerWidth;
+    // 按「盒子边缘」判断：拖到最边上时 left 会被夹到 4px 左右
+    var side = r.left < EDGE_NEAR ? 'l' : (r.right > vw - EDGE_NEAR ? 'r' : '');
+    if (!side) {
+      if (clinging) releaseCling(true);
+      return false;
+    }
+    clinging = side;
+    pet.classList.remove('pet--edge-l', 'pet--edge-r');
+    pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
+    var w = pet.offsetWidth || 168;
+    var h = pet.offsetHeight || 165;
+    // 正常站着贴到边上，并把脸转向屏幕里侧
+    pet.style.left = (side === 'l' ? 4 : vw - w - 4) + 'px';
+    var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
+    pet.style.bottom = bottom + 'px';
+    pet.classList.toggle('is-facing-left', side === 'r');
+    pet.style.setProperty('--wx', '0px');
+    pet.style.setProperty('--wy', '0px');
+    pet.style.setProperty('--walk-dur', '.3s');
+    walkX = 0;
+    walkY = 0;
+    clearTimeout(wanderTimer);
+    pausedUntil = Date.now() + 900000;          // 贴在边上时不乱跑
+    petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
+    clearTimeout(clingTimer);
+    clingTimer = setTimeout(function () { releaseCling(true); }, 70000 + Math.random() * 40000);
+    return true;
+  }
+
   function petMenuIsOpen() {
     return !!(petMenu && petMenu.classList.contains('is-open'));
   }
@@ -387,7 +446,7 @@
   var eatTimer = 0;
   function scheduleEat(delay) {
     clearTimeout(eatTimer);
-    if (reduceMotion || petQuiet || !pet) return;
+    if (reduceMotion || petQuiet || clinging || !pet) return;
     eatTimer = setTimeout(function () {
       if (entered && !document.hidden && !petMenuIsOpen() && !walking && !acting) eatWatermelon();
       scheduleEat(26000 + Math.random() * 30000);
@@ -415,6 +474,7 @@
 
     if (petQuiet) {
       // 立刻停下来：把当前位置固定住，清掉待办，收回气泡
+      releaseCling(true);
       stopEating();
       freezeWalk();
       clearTimeout(wanderTimer);
@@ -469,12 +529,12 @@
 
   function scheduleWander(delay) {
     clearTimeout(wanderTimer);
-    if (reduceMotion || petQuiet || !pet) return;
+    if (reduceMotion || petQuiet || clinging || !pet) return;
     wanderTimer = setTimeout(wanderStep, delay || (4500 + Math.random() * 7000));
   }
 
   function wanderStep() {
-    if (!pet || walking || acting || !entered || petQuiet || eating || document.hidden ||
+    if (!pet || walking || acting || clinging || !entered || petQuiet || eating || document.hidden ||
         petMenuIsOpen() || Date.now() < pausedUntil) {
       scheduleWander(3500);
       return;
@@ -550,7 +610,7 @@
 
   function scheduleAction(delay) {
     clearTimeout(actionTimer);
-    if (reduceMotion || petQuiet || !pet) return;
+    if (reduceMotion || petQuiet || clinging || !pet) return;
     actionTimer = setTimeout(function () {
       if (entered && !document.hidden && !petMenuIsOpen() && !walking && !eating && !acting &&
           Date.now() >= pausedUntil) {
@@ -577,7 +637,7 @@
   /* ---------- 会注意到你：鼠标跑到另一边时她会转身（有时还蹦一下） ---------- */
   var lastLookAt = 0;
   document.addEventListener('mousemove', function (e) {
-    if (!pet || !entered || walking || eating || acting || petQuiet || petMenuIsOpen()) return;
+    if (!pet || !entered || walking || eating || acting || clinging || petQuiet || petMenuIsOpen()) return;
     if (pet.classList.contains('is-dragging') || pet.classList.contains('is-dropping')) return;
     var now = Date.now();
     if (now - lastLookAt < 2500) return;
@@ -650,6 +710,7 @@
 
     petBtn.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (clinging) releaseCling(true);              // 抓住她就先松手站起来
       freezeWalk();                                  // 先把走动偏移并进 left/bottom
       var r = pet.getBoundingClientRect();
       dragging = true;
@@ -690,6 +751,7 @@
       updatePetFlip();
       pausedUntil = Date.now() + 12000;          // 你放哪儿她就在哪儿待一会儿
       setTimeout(function () { pet.dataset.dragged = '0'; }, 350);
+      setTimeout(tryCling, 30);                  // 松手时若贴着左右边缘就扒上去
     }
     petBtn.addEventListener('pointerup', endDrag);
     petBtn.addEventListener('pointercancel', endDrag);
