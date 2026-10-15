@@ -46,11 +46,13 @@
       setToggleState(false, '');
     }
 
-    // 桌宠：打个招呼，然后开始自己溜达
+    // 桌宠：打个招呼，然后开始自己溜达 / 眨眼 / 偶尔吃口西瓜
     if (pet) pet.removeAttribute('inert');
     petSay('欢迎回来，这里的风很轻。', 4200);
     scheduleWander(6000);
     scheduleChat(22000);
+    scheduleBlink(1200);
+    scheduleEat(16000);
   }
 
   if (enterBtn) enterBtn.addEventListener('click', enterSite);
@@ -288,6 +290,7 @@
   ];
   var PET_WALK_LINES = ['跟我来。', '四处看看…', '这里的浪声很好听。'];
   var PET_NAV_LINES = ['想去哪里看看？', '我带你走。', '要看哪一段？'];
+  var PET_EAT_LINES = ['西瓜很甜。', '夏天就该吃这个。', '要一起吃吗？'];
 
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
 
@@ -309,7 +312,10 @@
     petMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
     petBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (pet) pet.classList.toggle('is-menu-open', open);
-    if (open) pausedUntil = Date.now() + 15000;   // 菜单开着的时候先别乱跑
+    if (open) {
+      pausedUntil = Date.now() + 15000;   // 菜单开着的时候先别乱跑
+      stopEating();
+    }
   }
 
   /* ---------- 说话 ---------- */
@@ -342,6 +348,73 @@
     }, delay || (16000 + Math.random() * 16000));
   }
 
+  /* ---------- 眨眼 ---------- */
+  var petBite = document.getElementById('petBite');
+  var blinkTimer = 0;
+
+  function blinkOnce() {
+    if (!pet) return;
+    pet.classList.add('is-blinking');
+    setTimeout(function () { pet.classList.remove('is-blinking'); }, 120);
+  }
+
+  function scheduleBlink(delay) {
+    clearTimeout(blinkTimer);
+    if (!pet) return;
+    blinkTimer = setTimeout(function () {
+      if (!document.hidden) {
+        blinkOnce();
+        if (Math.random() < 0.22) setTimeout(blinkOnce, 260);   // 偶尔连眨两下
+      }
+      scheduleBlink(1800 + Math.random() * 4200);
+    }, delay || (1500 + Math.random() * 3000));
+  }
+
+  /* ---------- 吃西瓜 ---------- */
+  var eatTimers = [];
+  var eating = false;
+
+  function stopEating() {
+    eatTimers.forEach(clearTimeout);
+    eatTimers = [];
+    eating = false;
+    if (pet) pet.classList.remove('is-eating');
+    if (petBite) petBite.classList.remove('is-show');
+  }
+
+  function eatWatermelon() {
+    if (!pet || !petBite || eating || !entered) return;
+    eating = true;
+    pet.classList.add('is-eating');
+    petBite.src = 'assets/pet-bite-1.png';
+    petBite.classList.add('is-show');
+    eatTimers.push(setTimeout(function () {
+      petBite.src = 'assets/pet-bite-2.png';          // 再咬一口
+    }, 900));
+    eatTimers.push(setTimeout(function () {
+      petBite.classList.remove('is-show');             // 吃完，换回完整的一牙
+      pet.classList.remove('is-eating');
+      eating = false;
+      petSay(pick(PET_EAT_LINES), 2800);
+    }, 2600));
+  }
+
+  var eatTimer = 0;
+  function scheduleEat(delay) {
+    clearTimeout(eatTimer);
+    if (reduceMotion || petQuiet || !pet) return;
+    eatTimer = setTimeout(function () {
+      if (entered && !document.hidden && !petMenuIsOpen() && !walking) eatWatermelon();
+      scheduleEat(26000 + Math.random() * 30000);
+    }, delay || (22000 + Math.random() * 24000));
+  }
+
+  // 预加载两张咬口图，切换时不闪
+  ['assets/pet-bite-1.png', 'assets/pet-bite-2.png'].forEach(function (src) {
+    var im = new Image();
+    im.src = src;
+  });
+
   /* ---------- 安静模式 ---------- */
   var petQuietBtn = document.getElementById('petQuiet');
   var petQuietText = petQuietBtn ? petQuietBtn.querySelector('.pet__quiet-text') : null;
@@ -357,6 +430,7 @@
 
     if (petQuiet) {
       // 立刻停下来：把当前位置固定住，清掉待办，收回气泡
+      stopEating();
       freezeWalk();
       clearTimeout(wanderTimer);
       clearTimeout(chatTimer);
@@ -393,6 +467,7 @@
   // （走动动画进行到一半时也能正确接住，不会跳位）
   function freezeWalk() {
     if (!pet) return;
+    stopEating();                 // 被抓住的时候先别吃了
     clearTimeout(walkTimer);
     walking = false;
     pet.classList.remove('is-walking');
@@ -414,7 +489,7 @@
   }
 
   function wanderStep() {
-    if (!pet || walking || !entered || petQuiet || document.hidden || petMenuIsOpen() || Date.now() < pausedUntil) {
+    if (!pet || walking || !entered || petQuiet || eating || document.hidden || petMenuIsOpen() || Date.now() < pausedUntil) {
       scheduleWander(5000);
       return;
     }
@@ -593,6 +668,8 @@
       if (pet) pet.classList.remove('is-walking');
       scheduleWander(4000);
       scheduleChat(6000);
+      scheduleBlink(1500);
+      scheduleEat(12000);
     }
   });
 

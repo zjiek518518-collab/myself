@@ -808,23 +808,55 @@ body.is-entered .pet__enter {
   filter: drop-shadow(0 10px 24px rgba(4, 12, 26, .6));
   transition: transform .4s var(--ease);
 }
-.pet__art img {
+
+/* ---------- 纸片人分层（身体 / 双腿 / 闭眼 / 咬口） ---------- */
+.pet__puppet {
+  position: relative;
   display: block;
+  transform-origin: 50% 94%;
+  animation: petBreathe 5.2s ease-in-out infinite;    /* 待机：呼吸 + 轻轻晃 */
+}
+@keyframes petBreathe {
+  0%, 100% { transform: translateY(0) rotate(-1.1deg); }
+  50%      { transform: translateY(-2.5px) rotate(1.1deg); }
+}
+.pet__chew { position: relative; display: block; }
+
+/* 主体在最底层、负责撑开尺寸，其它层叠在上面 */
+.pet__body-img { display: block; width: 100%; height: auto; }
+.pet__layer {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
   height: auto;
-  animation: petBob 4.6s ease-in-out infinite;
-}
-@keyframes petBob {
-  0%, 100% { transform: translateY(0) rotate(-1deg); }
-  50%      { transform: translateY(-7px) rotate(1deg); }
 }
 
-/* 走动时的步伐 + 朝向 */
-.pet.is-walking .pet__art img { animation: petWalk .46s ease-in-out infinite; }
-@keyframes petWalk {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50%      { transform: translateY(-6px) rotate(3deg); }
+/* 双腿：绕胯部前后摆 = 迈腿 */
+.pet__leg { transform-origin: 41.5% 78%; }
+.pet__leg--r { transform-origin: 56.1% 78%; }
+.pet.is-walking .pet__leg--l { animation: petStepA .54s ease-in-out infinite alternate; }
+.pet.is-walking .pet__leg--r { animation: petStepB .54s ease-in-out infinite alternate; }
+@keyframes petStepA { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+@keyframes petStepB { from { transform: rotate(7deg); } to { transform: rotate(-7deg); } }
+
+/* 眨眼 */
+.pet__eyes { opacity: 0; transition: opacity .05s linear; }
+.pet.is-blinking .pet__eyes { opacity: 1; }
+
+/* 吃西瓜：咬口层 + 咀嚼点头 */
+.pet__bite { opacity: 0; transition: opacity .12s linear; }
+.pet.is-eating .pet__bite { opacity: 1; }
+.pet.is-eating .pet__chew { animation: petChew .3s ease-in-out 8; }
+@keyframes petChew {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(2.5px) rotate(-.8deg); }
 }
+
+/* 走动时呼吸快一点，像在使劲 */
+.pet.is-walking .pet__puppet { animation-duration: 3.2s; }
+
+/* 朝向 */
 .pet.is-facing-left .pet__art { transform: scaleX(-1); }
 
 /* 被点一下的反馈 */
@@ -1021,7 +1053,7 @@ body.is-entered .pet__enter {
 }
 
 /* 安静模式下不提速、不晃：走动动画本来就不会触发，这里再兜一层 */
-.pet.is-quiet .pet__art img { animation-duration: 6.4s; }
+.pet.is-quiet .pet__puppet { animation-duration: 7s; }
 
 /* 桌宠在屏幕右半边时，菜单改从左边弹出 */
 .pet--flip .pet__menu {
