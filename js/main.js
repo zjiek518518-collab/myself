@@ -320,9 +320,10 @@
       var ur = u.getBoundingClientRect();
       var delta = (side === 'l') ? (ur.left - DOCK_PAD) : (vw - DOCK_PAD - ur.right);
       if (Math.abs(delta) < 1) return;
-      // 每帧最多挪 120px：既不会跑飞，也能从远处一步步收敛（之前是 >400 直接放弃，右侧就卡住了）
+      // delta 都是「身体还需要往哪边挪多少」：左侧需求为正表示要往左，右侧为正表示要往右
+      var dir = (side === 'l') ? -1 : 1;
       var step = Math.max(-120, Math.min(120, delta));
-      pet.style.left = ((parseFloat(pet.style.left) || 0) - step) + 'px';
+      pet.style.left = ((parseFloat(pet.style.left) || 0) + dir * step) + 'px';
       if (Math.abs(delta) > 1 && n < 26) requestAnimationFrame(function () { loop(n + 1); });
     })(0);
   }
