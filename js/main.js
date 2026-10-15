@@ -326,6 +326,13 @@
     scheduleWander(5000);
   }
 
+  // 她现在是否真的贴在某一侧（误差 20px 内）
+  function atEdge(side) {
+    if (!pet) return false;
+    var r = pet.getBoundingClientRect();
+    return side === 'l' ? r.left <= 20 : r.right >= window.innerWidth - 20;
+  }
+
   function tryCling() {
     if (!pet) return false;
     var r = pet.getBoundingClientRect();
@@ -486,6 +493,8 @@
     clearTimeout(edgeTimer);
     if (!clinging || reduceMotion || petQuiet || !pet) return;
     edgeTimer = setTimeout(function () {
+      // 先核实她确实还在边缘：位置跑偏时就别再摆姿势了
+      if (clinging && !atEdge(clinging)) { releaseCling(true); return; }
       if (clinging && !document.hidden && !petMenuIsOpen() && !pet.classList.contains('is-dragging')) {
         var sit = Math.random() < 0.5;
         var cls = sit ? 'is-edgesit' : 'is-edgepeek';
@@ -706,6 +715,12 @@
         openPetMenu(false);
       }
       applyPos(startLeft + dx, startBottom - dy);
+      // 靠近边缘就亮起吸附提示条，松手即贴上去
+      var nr = pet.getBoundingClientRect();
+      var nearL = nr.left <= EDGE_NEAR;
+      var nearR = nr.right >= window.innerWidth - EDGE_NEAR;
+      document.body.classList.toggle('is-dock-l', nearL && !nearR);
+      document.body.classList.toggle('is-dock-r', nearR && !nearL);
       e.preventDefault();
     });
 
@@ -714,6 +729,7 @@
       dragging = false;
       if (!moved) return;
       pet.classList.remove('is-dragging');
+      document.body.classList.remove('is-dock-l', 'is-dock-r');
       pet.classList.add('is-dropping');                 // 落地压一下
       setTimeout(function () { pet.classList.remove('is-dropping'); }, 420);
       pet.dataset.dragged = '1';                 // 让紧随其后的 click 不打开菜单
@@ -762,6 +778,17 @@
       scheduleChat(6000);
       scheduleAction(5000);
     }
+  });
+
+  // 窗口尺寸变化：贴边位置重算（手机上地址栏收起会改变高度）
+  var resizeTimer = 0;
+  window.addEventListener('resize', function () {
+    if (!pet || !clinging) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (!clinging) return;
+      pet.style.left = (clinging === 'l' ? 4 : window.innerWidth - (pet.offsetWidth || 168) - 4) + 'px';
+    }, 160);
   });
 
   // 菜单里高亮当前所在的版块
