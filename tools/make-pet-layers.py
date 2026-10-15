@@ -1,4 +1,4 @@
-﻿"""把 Q 版立绘拆成可动的分层（纸片人做法），生成到 assets/：
+"""把 Q 版立绘拆成可动的分层（纸片人做法），生成到 assets/：
   pet-body.png    去掉双腿的主体
   pet-leg-l/r.png 左右腿（各自一层，绕胯部旋转 = 迈腿）
   pet-eyes.png    闭眼贴片（眨眼时叠上去）
@@ -11,7 +11,8 @@ import pathlib
 from PIL import Image, ImageDraw, ImageFilter
 
 WS = pathlib.Path(__file__).resolve().parent.parent
-DEV = WS
+DEV = WS / "_pet-preview"
+DEV.mkdir(exist_ok=True)
 A = WS / "assets"
 
 pet = Image.open(A / "pet.png").convert("RGBA")
@@ -183,4 +184,3 @@ b = compose(eyes_on=True).crop((120, 120, 340, 240)).resize((440, 240), Image.LA
 face.paste(b, (440, 0))
 face.save(DEV / "pet-eyes-preview.png")
 print("预览:", DEV / "pet-layers-preview.png", DEV / "pet-eyes-preview.png")
-
