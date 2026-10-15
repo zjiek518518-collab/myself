@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015v) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015w) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261015v) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261015w) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1379,11 +1379,12 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 
 /* 进入后的页面：整体背景＝新风景图（漂泊的终点） */
 .hero, .main {
-  background-image: url(../assets/bg-main.jpg?v=20261015v);
+  /* 进入后的页面主背景：守岸人立绘（沿用原来的取景位置） */
+  background-image: url(../assets/bg.jpg?v=20261015w);
   background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
+  background-position: center 22%;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 @media (max-width: 900px) {
   .main, .about { background-attachment: scroll; }
@@ -1395,7 +1396,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 /* 个人主页 / 自我介绍那一段：用回原来的守岸人立绘（压深一层保证文字可读） */
 section#about {
   background-image: linear-gradient(rgba(6, 14, 26, .86), rgba(6, 14, 26, .92)),
-                    url(../assets/bg.jpg?v=20261015v);
+                    url(../assets/bg.jpg?v=20261015w);
   background-size: cover, cover;
   background-position: center center, center 26%;
   background-repeat: no-repeat, no-repeat;
