@@ -320,9 +320,10 @@
       var ur = u.getBoundingClientRect();
       var delta = (side === 'l') ? (ur.left - DOCK_PAD) : (vw - DOCK_PAD - ur.right);
       if (Math.abs(delta) < 1) return;
-      if (Math.abs(delta) > 400) return;                 // 异常值直接放弃，绝不让它跑飞
-      pet.style.left = ((parseFloat(pet.style.left) || 0) - delta) + 'px';
-      if (n < 8) requestAnimationFrame(function () { loop(n + 1); });
+      // 每帧最多挪 120px：既不会跑飞，也能从远处一步步收敛（之前是 >400 直接放弃，右侧就卡住了）
+      var step = Math.max(-120, Math.min(120, delta));
+      pet.style.left = ((parseFloat(pet.style.left) || 0) - step) + 'px';
+      if (Math.abs(delta) > 1 && n < 26) requestAnimationFrame(function () { loop(n + 1); });
     })(0);
   }
 
