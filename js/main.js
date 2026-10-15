@@ -572,12 +572,12 @@
   /* ---------- 性格小动作：转圈 / 趴下 / 蹦 / 伸懒腰 / 歪头 / 开心晃动 ---------- */
   var actionTimer = 0;
   var acting = false;
-  var ACTIONS = ['tilt', 'hop', 'spin', 'stretch', 'cheer', 'lie'];
+  var ACTIONS = ['tilt', 'hop', 'spin', 'stretch', 'cheer'];
   var ACTION_CLASS = {
     tilt: 'is-tilting', hop: 'is-hopping', spin: 'is-spinning',
-    stretch: 'is-stretching', cheer: 'is-cheering', lie: 'is-lying'
+    stretch: 'is-stretching', cheer: 'is-cheering'
   };
-  var ACTION_MS = { hop: 700, spin: 1100, tilt: 1600, stretch: 1600, cheer: 2200, lie: 5600 };
+  var ACTION_MS = { hop: 700, spin: 1100, tilt: 1600, stretch: 1600, cheer: 2200 };
 
   function scheduleAction(delay) {
     clearTimeout(actionTimer);
@@ -598,7 +598,6 @@
     acting = true;
     pet.classList.add(cls);
     if (name === 'cheer') petSay(pick(['嘿嘿。', '今天也来看我啦？', '心情不错。']), 2600);
-    else if (name === 'lie') petSay(pick(['歇一会儿…', '这片海岸很安静。']), 2400);
     setTimeout(function () {
       pet.classList.remove(cls);
       acting = false;

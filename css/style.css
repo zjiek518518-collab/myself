@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url("../assets/bg.jpg") center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015c) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url("../assets/bg.jpg") center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015c) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -893,12 +893,6 @@ body.is-entered .pet__enter {
   0%   { transform: rotate(0) scale(1); }
   50%  { transform: rotate(180deg) scale(1.04); }
   100% { transform: rotate(360deg) scale(1); }
-}
-/* 趴下休息：绕脚下转倒，贴着画面底边 */
-.pet.is-lying .pet__chew { animation: petLie 1s var(--ease) forwards; transform-origin: 12% 100%; }
-@keyframes petLie {
-  0%   { transform: rotate(0) translate(0, 0); }
-  100% { transform: rotate(82deg) translate(-6%, 4%); }
 }
 /* 蹦一下 */
 .pet.is-hopping .pet__puppet { animation: petHop .55s cubic-bezier(.3,0,.4,1); }
