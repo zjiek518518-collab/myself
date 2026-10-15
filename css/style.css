@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261016W) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261016X) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261016W) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261016X) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1381,7 +1381,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .hero, .main {
   /* 整页一张连续背景（fixed+cover，滚动时完全不位移）＋统一压暗，避免段落之间接不上 */
   background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                    url(../assets/bg.jpg?v=20261016W);
+                    url(../assets/bg.jpg?v=20261016X);
   background-size: cover, cover;
   background-position: center center, center 22%;
   background-repeat: no-repeat, no-repeat;
@@ -1453,3 +1453,20 @@ section#about {
   from { transform: translateX(112px) translateY(0) rotate(0deg); }
   to   { transform: translateX(103px) translateY(-4px) rotate(2deg); }
 }
+
+
+/* 贴边（躲到屏幕外）时的气泡：紧贴她露出来的脑袋，并指向她 */
+.pet--edge-l .pet__speech,
+.pet--edge-r .pet__speech {
+  width: 166px;
+  bottom: 57%;                 /* 大约是她脑袋的高度 */
+  left: auto;
+  right: auto;
+}
+.pet--edge-l .pet__speech { left: 68px; }
+.pet--edge-r .pet__speech { right: 68px; }
+/* 原来向下的箭头在这种姿势下指向不对，直接去掉（气泡贴着头，不需要箭头） */
+.pet--edge-l .pet__speech::after,
+.pet--edge-r .pet__speech::after,
+.pet--edge-l .pet__speech::before,
+.pet--edge-r .pet__speech::before { display: none !important; }
