@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261015p) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015q) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg.jpg?v=20261015p) center 22% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261015q) center 22% / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1275,12 +1275,12 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 }
 
 
-/* ================= 开场重做：两只大蝴蝶螺旋缠绕 → 标题 → 进入按钮 ================= */
+/* ================= 开场：两只大蝴蝶扇着翅膀飞入并在按钮两侧缠绕 ================= */
 .intro__flies { position: absolute; inset: 0; }
 .swirl {
   position: absolute;
   left: 50%;
-  top: 62%;                 /* 汇聚点下移到「进入」按钮处，不压标题 */
+  top: 62%;                 /* 汇聚点＝「进入」按钮的位置 */
   width: 0;
   height: 0;
   opacity: 0;
@@ -1292,18 +1292,18 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .swirl--l { animation-name: swirlInL; }
 .swirl--r { animation-name: swirlInR; }
 @keyframes swirlInL {
-  0%   { opacity: 0; transform: translate(-52vw, -9vh) scale(1.75); }
-  14%  { opacity: 1; }
-  62%  { opacity: 1; transform: translate(-9vw, 3vh) scale(1.16); }
-  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+  0%   { opacity: 0; transform: translate(-56vw, -12vh); }
+  18%  { opacity: 1; }
+  55%  { transform: translate(-16vw, 5vh); }
+  100% { opacity: 1; transform: translate(0, 0); }
 }
 @keyframes swirlInR {
-  0%   { opacity: 0; transform: translate(52vw, 9vh) scale(1.75); }
-  14%  { opacity: 1; }
-  62%  { opacity: 1; transform: translate(9vw, -3vh) scale(1.16); }
-  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+  0%   { opacity: 0; transform: translate(56vw, 12vh); }
+  18%  { opacity: 1; }
+  55%  { transform: translate(16vw, -5vh); }
+  100% { opacity: 1; transform: translate(0, 0); }
 }
-/* 轨道：两只反向旋转，蝴蝶各挂在轨道两侧 → 看起来互相缠绕 */
+/* 缓慢的左右缠绕（两只反向、周期不同，永远不同步） */
 .swirl__orbit {
   display: block;
   position: absolute;
@@ -1311,31 +1311,35 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
   top: 0;
   width: 0;
   height: 0;
-  animation: swirlSpin 3.2s linear infinite;
+  animation: swirlDrift 6.4s ease-in-out infinite;
 }
-.swirl--r .swirl__orbit { animation-direction: reverse; }
-@keyframes swirlSpin {
-  from { transform: scaleY(.5) rotate(0deg); }
-  to   { transform: scaleY(.5) rotate(360deg); }
-}
+.swirl--r .swirl__orbit { animation: swirlDriftR 7.3s ease-in-out infinite; }
+@keyframes swirlDrift  { 0%, 100% { transform: rotate(-21deg); } 50% { transform: rotate(21deg); } }
+@keyframes swirlDriftR { 0%, 100% { transform: rotate(21deg); }  50% { transform: rotate(-21deg); } }
+
+/* 翅膀扇动：以身体为轴横向折叠/展开 */
 .swirl__bf {
   position: absolute;
-  left: -70px;
-  top: -160px;               /* 圆心上方 R=90 处 */
+  left: -210px;              /* 圆心左侧 R=140 处 */
+  top: -70px;
   width: 140px;
   max-width: none;
   height: 140px;
-  transform: scaleY(2);      /* 抵消轨道的压扁，蝴蝶本身不变形 */
   -webkit-user-drag: none;
   user-select: none;
+  transform-origin: 50% 50%;
+  animation: bfFlap .2s ease-in-out infinite alternate;
   filter: drop-shadow(0 0 10px rgba(150, 225, 255, .95))
           drop-shadow(0 0 30px rgba(80, 190, 255, .75))
           drop-shadow(0 0 60px rgba(40, 120, 255, .45));
 }
-/* 两只错开 180°：一只在轨道上方、一只在下方 */
-.swirl--r .swirl__bf { top: 20px; }   /* 圆心下方 R=90 处（与上一只恒隔 180°） */
+.swirl--r .swirl__bf { left: 70px; animation-delay: .09s; }   /* 圆心右侧 R=140 处 */
+@keyframes bfFlap {
+  from { transform: scaleX(1)    rotate(-3deg); }
+  to   { transform: scaleX(.42)  rotate(3deg); }
+}
 
-/* 标题更大，并且等蝴蝶汇聚之后再出现 */
+/* 标题更大，等蝴蝶到位后再出现 */
 .intro__title {
   font-size: clamp(54px, 8.6vw, 108px) !important;
   letter-spacing: .08em;
@@ -1346,16 +1350,24 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .enter-btn { animation-delay: 3.5s !important; }
 .intro__hint { animation-delay: 3.9s !important; }
 
-/* 进入后的页面背景换成新的风景图 */
+/* 进入后的页面：整体背景＝新风景图 */
 .main {
-  background-image: url(../assets/bg-main.jpg?v=20261015p);
+  background-image: url(../assets/bg-main.jpg?v=20261015q);
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
+/* 自我介绍那段保留原来的守岸人立绘（压深一层保证文字可读） */
+.about {
+  background-image: linear-gradient(rgba(6, 14, 26, .84), rgba(6, 14, 26, .90)),
+                    url(../assets/bg.jpg?v=20261015q);
+  background-size: cover, cover;
+  background-position: center center, center 28%;
+  background-repeat: no-repeat, no-repeat;
+}
 @media (max-width: 900px) {
-  .main { background-attachment: scroll; }
-  .swirl__bf { left: -40px; top: -100px; width: 80px; height: 80px; transform: scaleY(2); }
-  .swirl--r .swirl__bf { top: 20px; }
+  .main, .about { background-attachment: scroll; }
+  .swirl__bf { left: -130px; top: -44px; width: 88px; height: 88px; }
+  .swirl--r .swirl__bf { left: 42px; }
 }
