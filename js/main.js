@@ -299,45 +299,79 @@
   });
 
   /* ---------- 贴边：拖到左右边缘就停在边上（正常站着、转身朝屏幕里侧） ---------- */
-  var clinging = '';        // '' | 'l' | 'r'
+  /* ================= 贴边（重写） =================
+     规则：① 你拖到左右边缘松手 → 吸附、常驻、保持「靠着」姿势，不再自己走开
+           ② 点她一下 → 出来，继续溜达
+           ③ 直接拖她 → 跟着你的手走（同时解除贴边）
+     状态只有两个来源：dockTo() 设置、undock() 清除；其它任何地方都不许改。 */
+  var clinging = '';          // '' | 'l' | 'r'（走动/小动作的调度器靠它判断"贴边时别乱走"）
+  var dockedSide = '';        // 常驻贴边的旗标
+  var EDGE_NEAR = 64;         // 松手时离边缘这么近就吸附
+  var DOCK_PAD = 4;           // 身体与屏幕边留几像素
   var lastDropAt = 0;
-  var dockedSide = '';   // 拖放设置的「常驻贴边」旗标，只有点她才清除       // 刚拖放到边上的时刻（用来忽略拖放余波的那次 click）
-  var edgeTimer = 0;        // 贴边专属动作的计时器
-  var EDGE_NEAR = 64;       // 盒子离边缘这么近就吸附
-  var clingTimer = 0;
 
-  function releaseCling(silent) {
-    if (!clinging || !pet) return;
-    clinging = '';
-    dockedSide = '';
-    clearTimeout(clingTimer);
-    clearTimeout(edgeTimer);
-    pet.classList.remove('pet--edge-l', 'pet--edge-r', 'is-edgesit', 'is-edgepeek', 'is-leaning');
-    pet.style.setProperty('--walk-dur', '.45s');
-    var r = pet.getBoundingClientRect();
-    var w = pet.offsetWidth || 168;
-    var h = pet.offsetHeight || 165;
-    pet.style.left = (side === 'l' ? 4 : vw - 240) + 'px';
-    alignToEdge(side);
-    // 自愈：对齐完成后重新确认贴边状态与姿势，防止被别的逻辑误清
-    if (!clinging) clinging = side;
+  // 闭环对齐：反复量「看得见的身体」并微调 left，直到距边 DOCK_PAD（镜像/倾斜/留白都被吸收）
+  function alignToEdge(side) {
+    if (!pet) return;
+    var vw = window.innerWidth;
+    (function loop(n) {
+      var u = pet.querySelector('.pet__upper');
+      if (!u) return;
+      var ur = u.getBoundingClientRect();
+      var delta = (side === 'l') ? (ur.left - DOCK_PAD) : (vw - DOCK_PAD - ur.right);
+      if (Math.abs(delta) < 1) return;
+      pet.style.left = ((parseFloat(pet.style.left) || 0) - delta) + 'px';
+      if (n < 8) requestAnimationFrame(function () { loop(n + 1); });
+    })(0);
+  }
+
+  function dockTo(side) {
+    if (!pet || !side) return;
+    dockedSide = side;
+    clinging = side;
+    clearTimeout(walkTimer);
+    walking = false;
+    pet.classList.remove('is-walking', 'is-dropping', 'is-edgepeek', 'is-edgesit');
+    pet.classList.toggle('is-facing-left', side === 'l');       // 面朝屏幕里侧
+    pet.classList.remove('pet--edge-l', 'pet--edge-r');
     pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
-    pet.classList.add('is-leaning');          // 先进入靠着姿势，再对齐（形变参与计算）
-    pet.classList.add('is-leaning');
-    var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
-    pet.style.bottom = bottom + 'px';
-    pet.classList.toggle('is-facing-left', side === 'l');
     pet.style.setProperty('--wx', '0px');
     pet.style.setProperty('--wy', '0px');
-    pet.style.setProperty('--walk-dur', '.3s');
     walkX = 0;
     walkY = 0;
-    clearTimeout(wanderTimer);
-    pausedUntil = Date.now() + 900000;          // 贴在边上时不乱跑
-    petSay(pick(['我在这儿待着。', '这里视野不错。', '靠边站一会儿。']), 2600);
-    // 只有「手动拖到边上」才会靠边，而且常驻：点她一下才出来
-    pet.classList.add('is-leaning');          // 常驻姿势：一直靠着边
-    // 她要一直靠着：不再安排探头等会打断姿势的动作
+    pausedUntil = Date.now() + 3600000;                          // 常驻期间不自己乱跑
+    pet.style.left = (side === 'l' ? 4 : window.innerWidth - 200) + 'px';
+    alignToEdge(side);                                           // 靠姿已生效，形变参与对齐
+    petSay(pick(['我就在这儿待着。', '靠着边舒服。', '这儿视野不错。']), 2600);
+  }
+
+  function undock(silent) {
+    if (!pet) return;
+    var was = dockedSide || clinging;
+    dockedSide = '';
+    clinging = '';
+    pet.classList.remove('pet--edge-l', 'pet--edge-r', 'is-leaning', 'is-edgesit', 'is-edgepeek');
+    if (!was) return;
+    walkX = 0;
+    walkY = 0;
+    pet.style.setProperty('--wx', '0px');
+    pet.style.setProperty('--wy', '0px');
+    pet.style.left = Math.min(Math.max(parseFloat(pet.style.left) || 0, 4),
+                              Math.max(4, window.innerWidth - 200)) + 'px';
+    pausedUntil = Date.now() + 3000;
+    if (!silent) petSay('站好了。', 1800);
+    scheduleWander(5000);
+  }
+
+  // 松手后判断是否吸附（用可见身体的边缘判断，而不是图片框）
+  function maybeDock() {
+    if (!pet) return false;
+    var u = pet.querySelector('.pet__upper') || pet;
+    var r = u.getBoundingClientRect();
+    var vw = window.innerWidth;
+    var side = r.left <= EDGE_NEAR ? 'l' : (r.right >= vw - EDGE_NEAR ? 'r' : '');
+    if (!side) return false;
+    dockTo(side);
     return true;
   }
 
@@ -411,7 +445,6 @@
 
     if (petQuiet) {
       // 立刻停下来：把当前位置固定住，清掉待办，收回气泡
-      releaseCling(true);
       freezeWalk();
       clearTimeout(wanderTimer);
       clearTimeout(chatTimer);
@@ -468,7 +501,6 @@
     if (!clinging || reduceMotion || petQuiet || !pet) return;
     edgeTimer = setTimeout(function () {
       // 先核实她确实还在边缘：位置跑偏时就别再摆姿势了
-      if (clinging && !atEdge(clinging)) { releaseCling(true); return; }
       // 自愈：只要还站在边缘附近，就把贴边状态补回来
       (function selfHeal() {
         var u = pet.querySelector('.pet__upper');
@@ -480,10 +512,7 @@
         if (clinging) pet.classList.add('is-leaning');
       })();
       if (clinging && !document.hidden && !petMenuIsOpen() && !pet.classList.contains('is-dragging')) {
-        var cls = 'is-edgepeek';                 // 靠着坐已是常驻姿势，这里只偶尔探头
-        pet.classList.add(cls);
-        if (Math.random() < 0.5) petSay(pick(['有人吗？', '我看看。', '……']), 1600);
-        setTimeout(function () { pet.classList.remove(cls); }, 3600);
+        // 取消探头：它会打断「一直靠着」的姿势（用户明确要求常驻靠着）
       }
       scheduleEdgeAction(6000 + Math.random() * 7000);
     }, delay || (4000 + Math.random() * 4000));
@@ -618,9 +647,9 @@
     petBtn.addEventListener('click', function () {
       // 刚拖完的那一下不算“点击”
       if (pet && pet.dataset.dragged === '1') return;
-      if (clinging) {                       // 正贴着边：点一下＝出来，继续溜达
-        if (Date.now() - lastDropAt < 600) return;   // 拖放后的余波 click 不算「点她」
-        releaseCling();
+      if (clinging || dockedSide) {          // 正贴着边：点一下＝出来，继续溜达
+        if (Date.now() - lastDropAt < 600) return;   // 拖放余波的 click 不算「点她」
+        undock();
         return;
       }
       updatePetFlip();
@@ -701,7 +730,7 @@
       if (!moved && Math.abs(dx) + Math.abs(dy) < 6) return;   // 小抖动不算拖动
       if (!moved) {
         moved = true;
-        if (clinging) releaseCling(true);    // 真的开始拖了才让她站起来
+        if (clinging || dockedSide) undock(true);   // 真的开始拖了才解除贴边
         pet.classList.add('is-dragging');
         openPetMenu(false);
       }
@@ -730,7 +759,7 @@
       updatePetFlip();
       pausedUntil = Date.now() + 12000;          // 你放哪儿她就在哪儿待一会儿
       setTimeout(function () { pet.dataset.dragged = '0'; }, 350);
-      setTimeout(tryCling, 30);                  // 松手时若贴着左右边缘就扒上去
+      setTimeout(maybeDock, 40);                 // 松手：贴着左右边缘就吸附
     }
     petBtn.addEventListener('pointerup', endDrag);
     petBtn.addEventListener('pointercancel', endDrag);
@@ -779,8 +808,7 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
       if (!clinging) return;
-      var vw2 = window.innerWidth, rr2 = pet.getBoundingClientRect(), cur2 = parseFloat(pet.style.left) || 0;
-      pet.style.left = (clinging === 'l' ? cur2 - (rr2.left - 4) : cur2 + (vw2 - 3 - rr2.right)) + 'px';
+      alignToEdge(clinging);
     }, 160);
   });
 
@@ -788,9 +816,9 @@
   setInterval(function () {
     if (!dockedSide || !pet) return;
     var want = 'pet--edge-' + dockedSide;
-    if (!pet.classList.contains(want) || !pet.classList.contains('is-leaning')) {
+    if (!pet.classList.contains(want) || clinging !== dockedSide) {
       clinging = dockedSide;
-      pet.classList.add(want, 'is-leaning');
+      pet.classList.add(want);
       alignToEdge(dockedSide);
     }
   }, 800);
