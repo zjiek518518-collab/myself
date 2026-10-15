@@ -300,7 +300,8 @@
 
   /* ---------- 贴边：拖到左右边缘就停在边上（正常站着、转身朝屏幕里侧） ---------- */
   var clinging = '';        // '' | 'l' | 'r'
-  var lastDropAt = 0;       // 刚拖放到边上的时刻（用来忽略拖放余波的那次 click）
+  var lastDropAt = 0;
+  var dockedSide = '';   // 拖放设置的「常驻贴边」旗标，只有点她才清除       // 刚拖放到边上的时刻（用来忽略拖放余波的那次 click）
   var edgeTimer = 0;        // 贴边专属动作的计时器
   var EDGE_NEAR = 64;       // 盒子离边缘这么近就吸附
   var clingTimer = 0;
@@ -308,6 +309,7 @@
   function releaseCling(silent) {
     if (!clinging || !pet) return;
     clinging = '';
+    dockedSide = '';
     clearTimeout(clingTimer);
     clearTimeout(edgeTimer);
     pet.classList.remove('pet--edge-l', 'pet--edge-r', 'is-edgesit', 'is-edgepeek', 'is-leaning');
@@ -316,20 +318,7 @@
     var w = pet.offsetWidth || 168;
     var h = pet.offsetHeight || 165;
     pet.style.left = (side === 'l' ? 4 : vw - 240) + 'px';
-    // 闭环校正：量 .pet__upper（看得见的身体）的边缘，反复微调 left 直到贴住。
-    // 不依赖任何宽高假设，镜像/倾斜/透明留白都会被自动吸收。
-    (function alignLoop() {
-      var tries = arguments[0] || 0;
-      var u = pet.querySelector('.pet__upper');
-      if (!u) return;
-      var ur = u.getBoundingClientRect();
-      var delta = (side === 'l') ? (ur.left - 4) : (vw - 4 - ur.right);
-      var cur = parseFloat(pet.style.left) || 0;
-      pet.style.left = (cur - delta) + 'px';
-      if (Math.abs(delta) > 1.5 && tries < 5) {
-        requestAnimationFrame(function () { alignLoop(tries + 1); });
-      }
-    })();
+    alignToEdge(side);
     // 自愈：对齐完成后重新确认贴边状态与姿势，防止被别的逻辑误清
     if (!clinging) clinging = side;
     pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
@@ -795,6 +784,17 @@
     }, 160);
   });
 
+  // 看门狗：你亲手放到边上的状态、姿势、对齐，丢了就立刻补回来
+  setInterval(function () {
+    if (!dockedSide || !pet) return;
+    var want = 'pet--edge-' + dockedSide;
+    if (!pet.classList.contains(want) || !pet.classList.contains('is-leaning')) {
+      clinging = dockedSide;
+      pet.classList.add(want, 'is-leaning');
+      alignToEdge(dockedSide);
+    }
+  }, 800);
+
   // 菜单里高亮当前所在的版块
   function updatePetNav() {
     if (!petLinks.length) return;
@@ -836,4 +836,108 @@
     e.preventDefault();
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  /* ================= 8. 行为感知：跟着你的动作说话 ================= */
+  var REACT = {
+    scrollFast: ['慢一点…我跟不上了。', '这段有点长，慢慢看。'],
+    idle:       ['你还在吗？', '我在这儿等着。', '……（小声）'],
+    hover:      ['嗯？', '怎么啦。'],
+    poke:       ['别戳啦。', '痒。', '再戳我就躲了。'],
+    drag:       ['要带我去哪儿？', '轻一点…', '我自己会走啦。'],
+    dock:       ['我就在这儿待着。', '靠着边舒服。'],
+    away:       ['你回来啦。', '去哪儿了？'],
+    night:      ['这么晚还不睡？', '夜色正好。'],
+    copy:       ['要抄下来吗？', '记得写上我的名字。'],
+    musicOn:    ['好听吗？', '这首歌我很喜欢。'],
+    musicOff:   ['安静一点也不错。'],
+    top:        ['回到开头了。', '再看一遍？'],
+    about:      ['这是自我介绍那段。', '多写点嘛。'],
+    interests:  ['你也在意这些吗？', '兴趣相同就好。'],
+    contact:    ['想找我的话，就在这儿。', '别害羞。']
+  };
+  var lastReact = 0, lastReactKey = '';
+  function react(key, force) {
+    if (!entered || !pet || petQuiet || reduceMotion) return false;
+    var pool = REACT[key];
+    if (!pool) return false;
+    var now = Date.now();
+    if (!force && now - lastReact < 9000) return false;              // 全局冷却：别一直叨叨
+    if (!force && key === lastReactKey && now - lastReact < 40000) return false;
+    lastReact = now; lastReactKey = key;
+    petSay(pick(pool), 2600);
+    return true;
+  }
+
+  // 8.1 快速滚动
+  var lastY = window.scrollY, lastScrollAt = Date.now(), scrollBurst = 0;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY, now = Date.now(), dy = Math.abs(y - lastY);
+    if (now - lastScrollAt < 520 && dy > 850) scrollBurst++; else scrollBurst = 0;
+    lastScrollAt = now; lastY = y;
+    if (scrollBurst >= 2) { scrollBurst = 0; react('scrollFast'); }
+  }, { passive: true });
+
+  // 8.2 逛到哪一段
+  if ('IntersectionObserver' in window) {
+    var seenSec = {};
+    var secObs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting || e.intersectionRatio < 0.45) return;
+        var id = e.target.id;
+        if (seenSec[id]) return;
+        seenSec[id] = 1;
+        if (REACT[id]) react(id);
+      });
+    }, { threshold: [0.45] });
+    ['top', 'about', 'interests', 'contact'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) secObs.observe(el);
+    });
+  }
+
+  // 8.3 太久没动静
+  var lastAct = Date.now();
+  ['mousemove', 'scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+    document.addEventListener(ev, function () { lastAct = Date.now(); }, { passive: true });
+  });
+  setInterval(function () {
+    if (Date.now() - lastAct > 26000) { lastAct = Date.now(); react('idle'); }
+  }, 4000);
+
+  // 8.4 鼠标停在她身上 / 连着戳她 / 拖她 / 贴边（用 class 变化侦测，不碰原有逻辑）
+  if (pet) {
+    pet.addEventListener('pointerenter', function () { react('hover'); });
+    new MutationObserver(function () {
+      var c = pet.className;
+      if (c.indexOf('is-dropping') >= 0) react('drag');
+      if (c.indexOf('pet--edge-') >= 0) react('dock');
+    }).observe(pet, { attributes: true, attributeFilter: ['class'] });
+  }
+  var pokeCount = 0, pokeAt = 0;
+  if (petBtn) {
+    petBtn.addEventListener('click', function () {
+      var now = Date.now();
+      if (now - pokeAt > 2600) pokeCount = 0;
+      pokeAt = now; pokeCount++;
+      if (pokeCount >= 3) { pokeCount = 0; react('poke'); }
+    });
+  }
+
+  // 8.5 离开又回来 / 深夜 / 复制文字 / 开关音乐
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) react('away'); });
+  (function () {
+    var hh = new Date().getHours();
+    if (hh >= 22 || hh < 6) setTimeout(function () { react('night', true); }, 9000);
+  })();
+  document.addEventListener('copy', function () { react('copy'); });
+  document.addEventListener('click', function (e) {
+    if (!e.target || !e.target.closest) return;
+    if (e.target.closest('#musicToggle') || e.target.closest('.music-toggle')) {
+      setTimeout(function () {
+        var a = document.getElementById('bgm');
+        react(a && !a.paused ? 'musicOn' : 'musicOff');
+      }, 500);
+    }
+  });
+
 })();
