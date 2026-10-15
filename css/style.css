@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261017C) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261017D) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261017C) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261017D) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1345,7 +1345,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .intro__title {
   font-size: clamp(54px, 8.6vw, 108px) !important;
   letter-spacing: .08em;
-  animation-delay: 4.5s !important;
+  animation-delay: 4.35s;
 }
 
 /* 蝴蝶汇聚处爆出的蓝光 */
@@ -1364,7 +1364,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
     rgba(70, 160, 255, .5) 60%, rgba(30, 90, 200, 0) 80%);
   box-shadow: 0 0 44px 20px rgba(120, 210, 255, .5),
               0 0 130px 54px rgba(50, 140, 255, .32);
-  animation: glowBurst 1.5s cubic-bezier(.2, .72, .3, 1) 4.95s forwards;
+  animation: glowBurst 1.8s cubic-bezier(.25, .6, .3, 1) 4.8s forwards;
 }
 @keyframes glowBurst {
   0%   { opacity: 0;  transform: scale(.2); }
@@ -1372,16 +1372,16 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
   46%  { opacity: .85; transform: scale(1.12); }
   100% { opacity: 0;  transform: scale(1.62); }   /* 随着「进入」按钮出现而消散 */
 }
-.intro__eyebrow { animation-delay: 4.4s !important; }
-.intro__sub { animation-delay: 4.7s !important; }
-.enter-btn { animation-delay: 5.0s !important; }
-.intro__hint { animation-delay: 5.35s !important; }
+.intro__eyebrow { animation-delay: 4.25s !important; }
+.intro__sub { animation-delay: 4.55s !important; }
+.enter-btn { animation-delay: 5.25s !important; }
+.intro__hint { animation-delay: 5.65s !important; }
 
 /* 进入后的页面：整体背景＝新风景图（漂泊的终点） */
 .hero, .main {
   /* 整页一张连续背景（fixed+cover，滚动时完全不位移）＋统一压暗，避免段落之间接不上 */
   background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                    url(../assets/bg.jpg?v=20261017C);
+                    url(../assets/bg.jpg?v=20261017D);
   background-size: cover, cover;
   background-position: center center, center 22%;
   background-repeat: no-repeat, no-repeat;
@@ -1492,11 +1492,12 @@ section#about {
   animation: bloomLife 2.7s cubic-bezier(.22, .68, .3, 1) 3.85s forwards;
 }
 @keyframes bloomLife {
-  0%   { opacity: 0; transform: scale(.32); }
-  17%  { opacity: 1; transform: scale(.94); }      /* 两只汇成一只（成型） */
-  40%  { opacity: 1; transform: scale(1.02); }     /* 停一拍 */
-  63%  { opacity: 1; transform: scale(1.32); }     /* 开始绽放 */
-  100% { opacity: 0; transform: scale(2.15); }     /* 绽开、变亮、消散 */
+  0%   { opacity: 0; transform: scale(.42); }
+  22%  { opacity: 1; transform: scale(.96); }
+  46%  { opacity: 1; transform: scale(1.02); }
+  72%  { opacity: .82; transform: scale(1.34); }
+  100% { opacity: 0; transform: scale(1.78); }
+}     /* 绽开、变亮、消散 */
 }
 .bloom__bf {
   position: absolute;
@@ -1518,33 +1519,7 @@ section#about {
 }
 
 
-/* 绽放后碎裂成一群小蝴蝶飞散 */
-.shards {
-  position: absolute;
-  left: 50%;
-  top: 62%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-.shard {
-  position: absolute;
-  left: -13px;
-  top: -13px;
-  width: 26px;
-  max-width: none;
-  height: 26px;
-  opacity: 0;
-  -webkit-user-drag: none;
-  user-select: none;
-  filter: drop-shadow(0 0 6px rgba(150, 225, 255, .9)) drop-shadow(0 0 18px rgba(80, 190, 255, .6));
-  animation: shardFly var(--dur, 4.4s) cubic-bezier(.16, .72, .3, 1) var(--d, 5.5s) forwards;
-}
-@keyframes shardFly {
-  0%   { opacity: 0; transform: translate(0, 0); }
-  7%   { opacity: 1; }
-  70%  { opacity: .95; }
-  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)); }
+
 }
 }
 }
@@ -1561,3 +1536,7 @@ section#about {
   transform-origin: 50% 50%;
   animation: bfFlap .2s ease-in-out infinite alternate;
 }
+
+
+/* 进入按钮：淡入 + 轻微放大，与绽放的光自然衔接 */
+.enter-btn { animation-timing-function: cubic-bezier(.22, .68, .3, 1) !important; }
