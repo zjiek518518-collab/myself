@@ -546,6 +546,9 @@
     var stepMs = Math.max(180, Math.min(330, 320 - steps * 9));
 
     walking = true;
+    // 走动前先脱掉一切姿势类：绝不允许「歪着/缩着」滑行，那是「倒着走」的来源
+    ['is-edgesit', 'is-edgepeek', 'is-spinning', 'is-stretching', 'is-cheering', 'is-tilting', 'is-hopping']
+      .forEach(function (c) { pet.classList.remove(c); });
     pet.classList.toggle('is-facing-left', dx < 0);
     pet.classList.add('is-anticipating');            // 预备动作
     pet.style.setProperty('--walk-dur', (stepMs / 1000).toFixed(2) + 's');
