@@ -936,6 +936,20 @@ body.is-entered .pet__enter {
   45%      { transform: rotate(1.8deg) translateY(1.5px); }
 }
 
+/* 拖动：抓起来时抬一下、放下时落地压一下 */
+.pet.is-dragging .pet__chew {
+  animation: none;
+  transform: scale(1.06) rotate(-2deg);
+  transition: transform .16s var(--ease);
+}
+.pet.is-dropping .pet__chew { animation: petLand .4s var(--ease); }
+@keyframes petLand {
+  0%   { transform: scale(1.06) rotate(-2deg) translateY(-5px); }
+  55%  { transform: scale(.96) rotate(1deg) translateY(1px); }
+  100% { transform: none; }
+}
+.pet.is-dragging .pet__art { filter: drop-shadow(0 20px 26px rgba(0, 0, 0, .55)); }
+
 /* 朝向 */
 .pet.is-facing-left .pet__art { transform: scaleX(-1); }
 

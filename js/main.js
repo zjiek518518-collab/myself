@@ -578,6 +578,7 @@
   var lastLookAt = 0;
   document.addEventListener('mousemove', function (e) {
     if (!pet || !entered || walking || eating || acting || petQuiet || petMenuIsOpen()) return;
+    if (pet.classList.contains('is-dragging') || pet.classList.contains('is-dropping')) return;
     var now = Date.now();
     if (now - lastLookAt < 2500) return;
     var r = pet.getBoundingClientRect();
@@ -681,6 +682,8 @@
       dragging = false;
       if (!moved) return;
       pet.classList.remove('is-dragging');
+      pet.classList.add('is-dropping');                 // 落地压一下
+      setTimeout(function () { pet.classList.remove('is-dropping'); }, 420);
       pet.dataset.dragged = '1';                 // 让紧随其后的 click 不打开菜单
       freezeWalk();
       savePos();
