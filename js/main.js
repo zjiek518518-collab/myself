@@ -314,55 +314,20 @@
     var r = pet.getBoundingClientRect();
     var w = pet.offsetWidth || 168;
     var h = pet.offsetHeight || 165;
-    // 图层四周有透明留白，靠着时身体还会向内倾一点点——按「可见边缘」补偿
-    var boxW = pet.offsetWidth || 168;
-    var insetL = boxW * (parseFloat(getComputedStyle(pet).getPropertyValue('--art-inset-l')) || 6) / 100;
-    var insetR = boxW * (parseFloat(getComputedStyle(pet).getPropertyValue('--art-inset-r')) || 6) / 100;
-    var leanShift = Math.round(Math.sin(7 * Math.PI / 180) * (h * 0.42));
-    pet.style.left = Math.min(Math.max(r.left, 4), Math.max(4, window.innerWidth - w - 4)) + 'px';
-    pet.style.bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4)) + 'px';
-    pet.style.setProperty('--wx', '0px');
-    pet.style.setProperty('--wy', '0px');
-    walkX = 0;
-    walkY = 0;
-    updatePetFlip();
-    pausedUntil = Date.now() + 3000;
-    if (!silent) petSay('站好了。', 1800);
-    scheduleWander(5000);
-  }
-
-  // 她现在是否真的贴在某一侧（误差 20px 内）
-  function atEdge(side) {
-    if (!pet) return false;
-    var r = pet.getBoundingClientRect();
-    return side === 'l' ? r.left <= 20 : r.right >= window.innerWidth - 20;
-  }
-
-  function tryCling() {
-    if (!pet) return false;
-    var r = pet.getBoundingClientRect();
-    var vw = window.innerWidth;
-    // 按「盒子边缘」判断：拖到最边上时 left 会被夹到 4px 左右
-    var side = r.left < EDGE_NEAR ? 'l' : (r.right > vw - EDGE_NEAR ? 'r' : '');
-    if (!side) {
-      if (clinging) releaseCling(true);
-      return false;
-    }
-    clinging = side;
-    pet.classList.remove('pet--edge-l', 'pet--edge-r');
-    pet.classList.add(side === 'l' ? 'pet--edge-l' : 'pet--edge-r');
-    var h = pet.offsetHeight || 165;
-    // 先给个初值，再按「真实渲染位置」量一次并校正——offsetWidth 有时比实际宽，
-    // 直接用宽度算会留出一条缝（就是「没贴到边」的原因）
     pet.style.left = (side === 'l' ? 4 : vw - 240) + 'px';
-    (function snap() {
-      var rr = pet.getBoundingClientRect();
+    // 闭环校正：量 .pet__upper（看得见的身体）的边缘，反复微调 left 直到贴住。
+    // 不依赖任何宽高假设，镜像/倾斜/透明留白都会被自动吸收。
+    (function alignLoop() {
+      var tries = arguments[0] || 0;
+      var u = pet.querySelector('.pet__upper');
+      if (!u) return;
+      var ur = u.getBoundingClientRect();
+      var delta = (side === 'l') ? (ur.left - 4) : (vw - 4 - ur.right);
       var cur = parseFloat(pet.style.left) || 0;
-      // 左右不对称：她在右侧是镜像的，而这张立绘左右轮廓不对称（头发往一侧飘），
-      // 所以右侧要额外补一段，才能让「看得见的身体」也贴住边
-      var asymR = 62;
-      if (side === 'l') pet.style.left = (cur - (rr.left - 4) - insetL - leanShift) + 'px';
-      else pet.style.left = (cur + (vw - 3 - rr.right) + insetR + leanShift + asymR) + 'px';
+      pet.style.left = (cur - delta) + 'px';
+      if (Math.abs(delta) > 1.5 && tries < 5) {
+        requestAnimationFrame(function () { alignLoop(tries + 1); });
+      }
     })();
     var bottom = Math.min(Math.max(window.innerHeight - r.bottom, 4), Math.max(4, window.innerHeight - h - 4));
     pet.style.bottom = bottom + 'px';
