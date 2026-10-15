@@ -355,7 +355,7 @@
   function blinkOnce() {
     if (!pet) return;
     pet.classList.add('is-blinking');
-    setTimeout(function () { pet.classList.remove('is-blinking'); }, 120);
+    setTimeout(function () { pet.classList.remove('is-blinking'); }, 100);
   }
 
   function scheduleBlink(delay) {
@@ -388,15 +388,19 @@
     pet.classList.add('is-eating');
     petBite.src = 'assets/pet-bite-1.png';
     petBite.classList.add('is-show');
-    eatTimers.push(setTimeout(function () {
-      petBite.src = 'assets/pet-bite-2.png';          // 再咬一口
+    eatTimers.push(setTimeout(function () {              // 咬第二口
+      petBite.src = 'assets/pet-bite-2.png';
+      petSay(pick(['啊呜…', '嗯…']), 1500);
     }, 900));
-    eatTimers.push(setTimeout(function () {
-      petBite.classList.remove('is-show');             // 吃完，换回完整的一牙
+    eatTimers.push(setTimeout(function () {              // 咬掉大半
+      petBite.src = 'assets/pet-bite-3.png';
+    }, 1900));
+    eatTimers.push(setTimeout(function () {              // 吃完，换回完整的一牙
+      petBite.classList.remove('is-show');
       pet.classList.remove('is-eating');
       eating = false;
       petSay(pick(PET_EAT_LINES), 2800);
-    }, 2600));
+    }, 4000));
   }
 
   var eatTimer = 0;
@@ -409,8 +413,8 @@
     }, delay || (22000 + Math.random() * 24000));
   }
 
-  // 预加载两张咬口图，切换时不闪
-  ['assets/pet-bite-1.png', 'assets/pet-bite-2.png'].forEach(function (src) {
+  // 预加载三张咬口图，切换时不闪
+  ['assets/pet-bite-1.png', 'assets/pet-bite-2.png', 'assets/pet-bite-3.png'].forEach(function (src) {
     var im = new Image();
     im.src = src;
   });
