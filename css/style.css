@@ -1791,10 +1791,13 @@ section#contact [class*="card"], section#contact a[class*="card"], section#conta
   overflow: hidden;
   transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
-.facts > div::after {
+\.facts > div::after {
   content: var(--icon);
-  position: absolute; right: 9px; top: 5px;
-  font-size: 22px; opacity: .3;
+  position: absolute;
+  right: 8px;
+  top: 4px;
+  font-size: 23px;
+  opacity: .52;
 }
 .facts dt {
   margin: 0 0 6px;
@@ -1987,29 +1990,40 @@ section#contact a.contact-card:nth-of-type(2) .cc__icon {
 
 /* ===== 自我介绍：大标题式呈现（小字定位行 + 超大字重点句 + 关键词渐变） ===== */
 .ihead { margin: 4px 0 20px; }
-.ihead__kicker {
-  margin: 0 0 14px;
-  font-size: 13.5px;
-  letter-spacing: .18em;
+\.ihead__kicker {
+  margin: 0 0 13px;
+  font-size: 13px;
+  letter-spacing: .16em;
   font-weight: 600;
-  background: linear-gradient(92deg, #8fc0ff, #b9a6ff 70%, #f0a6ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(94deg, #9dc8ff, #b8a8ff 70%, #d79bff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
 }
-.ihead__title {
+\.ihead__title {
   margin: 0;
-  font-size: clamp(25px, 6.2vw, 40px);
-  line-height: 1.46;
+  font-size: clamp(24px, 4.4vw, 34px);
+  line-height: 1.5;
   font-weight: 800;
-  letter-spacing: .01em;
-  color: #f4f8ff;
+  letter-spacing: .005em;
+  color: #f6f9ff;
+  max-width: 46em;
 }
 .ig { font-weight: 800; }
-.ig--name { background: linear-gradient(92deg, #ffc9e4, #f0a6ff 55%, #c9a6ff); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-.ig--nick { background: linear-gradient(92deg, #9fd8ff, #8fb8ff 60%, #a99bff); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-.ig--code { background: linear-gradient(92deg, #7fe6ff, #6fb4ff 70%, #9aa8ff); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+\.ig--name {
+  background: linear-gradient(94deg, #ffb0d8, #ff86c4 70%, #ff7ab8);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
+\.ig--nick {
+  background: linear-gradient(94deg, #9fd8ff, #7fb6ff 75%, #7aa8ff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
+\.ig--code {
+  background: linear-gradient(94deg, #7fe6ff, #59d2ff 75%, #55c4ff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
 @media (max-width: 620px) {
   .ihead__title { font-size: clamp(23px, 7.4vw, 31px); line-height: 1.52; }
   .ihead__kicker { font-size: 12px; letter-spacing: .14em; }
@@ -2056,4 +2070,78 @@ section#contact a.contact-card:nth-of-type(2) .cc__icon {
   .clockbar { gap: 9px; padding: 15px 14px; margin-top: 0; }
   .clockbar__label { font-size: 12px; letter-spacing: .14em; }
   .clockbar__date { font-size: 12px; width: 100%; text-align: center; }
+}
+
+/* ===== 大标题：配色更亮更清晰 + 折行更自然 ===== */
+.ihead__title {
+  font-size: clamp(24px, 4.4vw, 34px) !important;
+  line-height: 1.5 !important;
+  letter-spacing: .005em !important;
+  color: #f6f9ff !important;
+  text-wrap: pretty;
+  max-width: 46em;
+}
+.ig--name { background: linear-gradient(94deg, #ffb0d8, #ff86c4 70%, #ff7ab8) !important; }
+.ig--nick { background: linear-gradient(94deg, #9fd8ff, #7fb6ff 75%, #7aa8ff) !important; }
+.ig--code { background: linear-gradient(94deg, #7fe6ff, #59d2ff 75%, #55c4ff) !important; }
+.ihead__kicker {
+  background: linear-gradient(94deg, #9dc8ff, #b8a8ff 70%, #d79bff) !important;
+  font-size: 13px !important;
+  letter-spacing: .16em !important;
+}
+.ihead { margin: 6px 0 22px !important; }
+.ihead__title + * { margin-top: 4px; }
+
+/* ===== 自我介绍段落：与标题拉开层次 ===== */
+.about__p { font-size: 14.5px; line-height: 1.95; color: rgba(220, 232, 250, .78); margin-top: 14px; }
+
+/* ===== 信息卡：等高、图标更清楚 ===== */
+.facts { align-items: stretch; }
+.facts > div { display: flex; flex-direction: column; justify-content: flex-start; }
+.facts > div::after { opacity: .52 !important; font-size: 23px !important; right: 8px !important; top: 4px !important; }
+.facts dt { margin-bottom: 7px !important; }
+.facts dd { margin-top: auto; }
+@media (max-width: 620px) {
+  .ihead__title { font-size: clamp(21px, 6.6vw, 28px) !important; line-height: 1.54 !important; }
+  .facts > div::after { opacity: .42 !important; font-size: 20px !important; }
+}
+
+/* ===== 大标题：配色与排版（顶层规则，确保生效） ===== */
+.ihead__kicker { font-size: 13px; letter-spacing: .16em; font-weight: 600; }
+.ihead__title {
+  font-size: clamp(24px, 4.4vw, 34px);
+  line-height: 1.5;
+  font-weight: 800;
+  letter-spacing: .005em;
+  color: #f6f9ff;
+  max-width: 46em;
+  margin: 0;
+}
+.ig--name { background: linear-gradient(94deg, #ffb0d8, #ff86c4 70%, #ff7ab8); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.ig--nick { background: linear-gradient(94deg, #9fd8ff, #7fb6ff 75%, #7aa8ff); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.ig--code { background: linear-gradient(94deg, #7fe6ff, #59d2ff 75%, #55c4ff); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.facts > div::after { opacity: .52; font-size: 23px; right: 8px; top: 4px; }
+@media (max-width: 620px) {
+  .ihead__title { font-size: clamp(21px, 6.6vw, 28px); line-height: 1.54; }
+  .facts > div::after { opacity: .42; font-size: 20px; }
+}
+
+/* ===== 大标题提权（压过基础 h3 字号），配色与排版 ===== */
+section#about .ihead__title {
+  font-size: clamp(24px, 4.4vw, 34px) !important;
+  line-height: 1.5 !important;
+  font-weight: 800 !important;
+  letter-spacing: .005em !important;
+  color: #f6f9ff !important;
+  max-width: 46em;
+  margin: 0 !important;
+}
+section#about .ihead__title .ig--name { background: linear-gradient(94deg, #ffb0d8, #ff86c4 70%, #ff7ab8) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; }
+section#about .ihead__title .ig--nick { background: linear-gradient(94deg, #9fd8ff, #7fb6ff 75%, #7aa8ff) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; }
+section#about .ihead__title .ig--code { background: linear-gradient(94deg, #7fe6ff, #59d2ff 75%, #55c4ff) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; }
+section#about .ihead__kicker { font-size: 13px !important; letter-spacing: .16em !important; }
+section#about .facts > div::after { opacity: .52 !important; font-size: 23px !important; right: 8px !important; top: 4px !important; }
+@media (max-width: 620px) {
+  section#about .ihead__title { font-size: clamp(21px, 6.6vw, 28px) !important; line-height: 1.54 !important; }
+  section#about .facts > div::after { opacity: .42 !important; font-size: 20px !important; }
 }
