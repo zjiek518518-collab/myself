@@ -995,6 +995,7 @@
   function tryMusic(why) {
     var a = musicEl();
     if (!a || !wantMusic) return;
+    if (window.__trackPlaying) return;          // 正在放歌：不要动背景音乐
     if (Date.now() < musicQuietUntil) return;      // 用户刚关掉：不要自作主张接回来
     if (!a.paused && a.currentTime > 0) { musicRetry = 0; return; }
     var pr = null;
@@ -1023,6 +1024,8 @@
     if (!t || !t.closest) return;
     if (!(t.closest('#musicToggle') || t.closest('.music-toggle'))) return;
     var wasPlaying = musicPlaying();          // 点之前是否在播：在播→你要关；没在播→你要开
+    var bgmEl = musicEl();
+    if (bgmEl && bgmEl.muted) { bgmEl.muted = false; window.__trackPlaying = false; }
     musicTouched = true;
     wantMusic = !wasPlaying;
     musicRetry = 0;
@@ -1082,14 +1085,23 @@
       if (audio.getAttribute('src') !== src) audio.setAttribute('src', src);
       cur = li;
       var bgm = document.getElementById('bgm');
-      if (bgm && !bgm.paused) bgm.pause();
+      if (bgm) { bgm.muted = true; window.__trackPlaying = true; }   // 只静音，不改播放状态（避免被"自愈"逻辑接回来）
       var pr = audio.play();
       if (pr && pr.catch) pr.catch(function (err) { console.warn('[tracks] 播放被拒', err && err.name); });
       paint();
     });
-    ['timeupdate', 'play', 'pause', 'ended', 'error'].forEach(function (ev) {
+    function releaseBgm() {
+      var bgm = document.getElementById('bgm');
+      if (bgm) bgm.muted = false;
+      window.__trackPlaying = false;
+    }
+    ['timeupdate', 'play'].forEach(function (ev) {
+      audio.addEventListener(ev, function () { paint(); });
+    });
+    ['pause', 'ended', 'error'].forEach(function (ev) {
       audio.addEventListener(ev, function () {
         if (ev === 'error') console.warn('[tracks] 音频错误 code =', audio.error && audio.error.code);
+        releaseBgm();
         paint();
       });
     });
