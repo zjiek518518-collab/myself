@@ -1046,4 +1046,42 @@
     if (!document.hidden && wantMusic && Date.now() >= musicQuietUntil) setTimeout(function () { tryMusic('visible'); }, 600);
   });
 
+
+  /* ================= 音乐卡片：歌单播放器 ================= */
+  (function () {
+    var audio = document.getElementById('trackAudio');
+    var list = document.querySelectorAll('.track');
+    if (!audio || !list.length) return;
+    var cur = null;
+    function stopOthers() {
+      var bgm = document.getElementById('bgm');
+      if (bgm && !bgm.paused) bgm.pause();          // 放歌时先停背景音乐，避免叠在一起
+    }
+    function paint() {
+      list.forEach(function (li) {
+        var on = li === cur && !audio.paused;
+        li.classList.toggle('is-playing', on);
+        var btn = li.querySelector('.track__btn');
+        if (btn) btn.textContent = on ? '❚❚' : '▶';
+        var bar = li.querySelector('.track__bar i');
+        if (bar) bar.style.width = (li === cur && audio.duration ? (audio.currentTime / audio.duration * 100) : 0) + '%';
+      });
+    }
+    list.forEach(function (li) {
+      li.querySelector('.track__btn').addEventListener('click', function () {
+        var src = li.getAttribute('data-src');
+        if (cur === li && !audio.paused) { audio.pause(); paint(); return; }
+        if (audio.getAttribute('src') !== src) { audio.setAttribute('src', src); }
+        cur = li;
+        stopOthers();
+        var pr = audio.play();
+        if (pr && pr.catch) pr.catch(function () {});
+        paint();
+      });
+    });
+    audio.addEventListener('timeupdate', paint);
+    audio.addEventListener('play', paint);
+    audio.addEventListener('pause', paint);
+    audio.addEventListener('ended', function () { paint(); });
+  })();
 })();
