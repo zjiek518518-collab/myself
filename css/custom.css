@@ -359,3 +359,36 @@ section#contact a.contact-card { margin-top: 16px !important; }
   letter-spacing: .06em;
   color: rgba(200, 220, 255, .64) !important;
 }
+
+/* ===== 关键词强调：改成纯色（避免旧浏览器把渐变渲染成色块） ===== */
+.ig, section#about .ihead__title .ig--name, section#about .ihead__title .ig--nick, section#about .ihead__title .ig--code {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  animation: none !important;
+  font-weight: 800 !important;
+}
+.ig--name { color: #ffb3d9 !important; }
+.ig--nick { color: #9fd8ff !important; }
+.ig--code { color: #7fe6ff !important; }
+
+/* ===== 关键词纯色（用与旧规则同等权重覆盖，确保不再透明） ===== */
+section#about .ihead__title .ig,
+section#about .ihead__title .ig--name,
+section#about .ihead__title .ig--nick,
+section#about .ihead__title .ig--code,
+.ig, .ig--name, .ig--nick, .ig--code {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  animation: none !important;
+  font-weight: 800 !important;
+  color: inherit;
+  -webkit-text-fill-color: inherit !important;
+}
+section#about .ihead__title .ig--name { color: #ffb3d9 !important; -webkit-text-fill-color: #ffb3d9 !important; }
+section#about .ihead__title .ig--nick { color: #9fd8ff !important; -webkit-text-fill-color: #9fd8ff !important; }
+section#about .ihead__title .ig--code { color: #7fe6ff !important; -webkit-text-fill-color: #7fe6ff !important; }
