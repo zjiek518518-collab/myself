@@ -1047,41 +1047,55 @@
   });
 
 
-  /* ================= 音乐卡片：歌单播放器 ================= */
+  /* ================= 音乐卡片：歌单播放器（事件委托 + 日志） ================= */
   (function () {
     var audio = document.getElementById('trackAudio');
-    var list = document.querySelectorAll('.track');
-    if (!audio || !list.length) return;
-    var cur = null;
-    function stopOthers() {
-      var bgm = document.getElementById('bgm');
-      if (bgm && !bgm.paused) bgm.pause();          // 放歌时先停背景音乐，避免叠在一起
+    if (!audio) {                       // HTML 里的位置可能被解析器丢弃，这里直接兜底创建
+      audio = document.createElement('audio');
+      audio.id = 'trackAudio';
+      audio.preload = 'none';
+      document.body.appendChild(audio);
+      console.log('[tracks] 已用 JS 创建 #trackAudio');
     }
+    var wrap = document.querySelector('.tracks');
+    if (!wrap) { console.warn('[tracks] 未找到 .tracks'); return; }
+    console.log('[tracks] 初始化，行数 =', wrap.querySelectorAll('.track').length);
+    var cur = null;
     function paint() {
-      list.forEach(function (li) {
-        var on = li === cur && !audio.paused;
+      wrap.querySelectorAll('.track').forEach(function (li) {
+        var on = (li === cur) && !audio.paused;
         li.classList.toggle('is-playing', on);
         var btn = li.querySelector('.track__btn');
         if (btn) btn.textContent = on ? '❚❚' : '▶';
         var bar = li.querySelector('.track__bar i');
-        if (bar) bar.style.width = (li === cur && audio.duration ? (audio.currentTime / audio.duration * 100) : 0) + '%';
+        if (bar) bar.style.width = (audio.duration && li === cur ? (audio.currentTime / audio.duration * 100) : 0) + '%';
       });
     }
-    list.forEach(function (li) {
-      li.querySelector('.track__btn').addEventListener('click', function () {
-        var src = li.getAttribute('data-src');
-        if (cur === li && !audio.paused) { audio.pause(); paint(); return; }
-        if (audio.getAttribute('src') !== src) { audio.setAttribute('src', src); }
-        cur = li;
-        stopOthers();
-        var pr = audio.play();
-        if (pr && pr.catch) pr.catch(function () {});
+    wrap.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest('.track__btn') : null;
+      if (!btn) return;
+      var li = btn.closest('.track');
+      if (!li) return;
+      var src = li.getAttribute('data-src');
+      console.log('[tracks] 点击', src);
+      if (cur === li && !audio.paused) { audio.pause(); paint(); return; }
+      if (audio.getAttribute('src') !== src) audio.setAttribute('src', src);
+      cur = li;
+      var bgm = document.getElementById('bgm');
+      if (bgm && !bgm.paused) bgm.pause();
+      var pr = audio.play();
+      if (pr && pr.catch) pr.catch(function (err) { console.warn('[tracks] 播放被拒', err && err.name); });
+      paint();
+    });
+    ['timeupdate', 'play', 'pause', 'ended', 'error'].forEach(function (ev) {
+      audio.addEventListener(ev, function () {
+        if (ev === 'error') console.warn('[tracks] 音频错误 code =', audio.error && audio.error.code);
         paint();
       });
     });
-    audio.addEventListener('timeupdate', paint);
-    audio.addEventListener('play', paint);
-    audio.addEventListener('pause', paint);
-    audio.addEventListener('ended', function () { paint(); });
+    window.__tracksDebug = function () {
+      console.log('[tracks] state', JSON.stringify({ src: audio.getAttribute('src'), paused: audio.paused,
+        t: +audio.currentTime.toFixed(2), dur: +(audio.duration || 0).toFixed(1), cur: cur && cur.getAttribute('data-src') }));
+    };
   })();
 })();
