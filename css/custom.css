@@ -132,3 +132,12 @@ section#about .ihead__title {
   .qa-card__q { font-size: 15px; }
   .qa-card__a { font-size: 14px; line-height: 1.88; }
 }
+
+/* ===== 自我介绍：文字块与头像顶部平齐（真实容器是 .about） ===== */
+section#about .about { align-items: flex-start !important; }
+section#about .about > .about__avatar,
+section#about .about .about__avatar { align-self: flex-start !important; margin-top: 0 !important; }
+section#about .about > div:not(.about__avatar) { margin-top: 0 !important; padding-top: 0 !important; }
+/* 定位行不要有多余上边距/行高留白导致的视觉偏移 */
+section#about .ihead__kicker { margin-top: 0 !important; line-height: 1.35 !important; }
+section#about .ihead { margin-top: 0 !important; padding-top: 0 !important; }
