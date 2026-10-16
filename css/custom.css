@@ -269,3 +269,22 @@ section#about .ihead__kicker, .ihead__kicker {
 .gcard-feel strong { color: #ffffff; }
 .gcard__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 @media (max-width: 620px) { .gcard__desc { -webkit-line-clamp: 4; } }
+
+/* 游戏分组小标题 */
+.gcard-sub {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 0 !important;
+  font-size: 13px !important;
+  letter-spacing: .14em;
+  font-weight: 600;
+  color: #9dc2ff !important;
+}
+.gcard-sub::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(120, 175, 255, .34), rgba(120, 175, 255, 0));
+}
+@media (max-width: 620px) { .gcard-sub { margin-top: 18px !important; font-size: 12.5px !important; } }
