@@ -334,3 +334,11 @@ section#contact a.contact-card { margin-top: 16px !important; }
   .about__qa { margin-top: 26px !important; padding-top: 20px !important; }
   .qa-grid { gap: 14px !important; }
 }
+
+/* 无封面的游戏卡片（如鸣潮）：文字块 + 按钮 */
+.gcard--nocover { grid-template-columns: minmax(0, 1fr) auto !important; }
+.gcard--nocover .gcard__title { font-size: 15.5px !important; }
+@media (max-width: 620px) {
+  .gcard--nocover { grid-template-columns: minmax(0, 1fr) !important; }
+  .gcard--nocover .gcard__btn { grid-column: 1 / -1; justify-content: center; }
+}
