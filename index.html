@@ -7,9 +7,9 @@
 <meta name="description" content="守岸人的港湾 —— 蓝色星空下的个人主页。">
 <meta name="theme-color" content="#050b16">
 <meta name="color-scheme" content="dark">
-<link rel="icon" href="assets/favicon.svg?v=20261017M" type="image/svg+xml">
-<link rel="preload" as="image" href="assets/bg.jpg?v=20261017M">
-<link rel="stylesheet" href="css/style.css?v=20261017M">
+<link rel="icon" href="assets/favicon.svg?v=20261017N" type="image/svg+xml">
+<link rel="preload" as="image" href="assets/bg.jpg?v=20261017N">
+<link rel="stylesheet" href="css/style.css?v=20261017N">
 <!-- 没有 JavaScript 时（或预览器屏蔽脚本时）不至于卡在开场层 -->
 <noscript>
   <style>
@@ -25,7 +25,7 @@
 
 <!-- ================= 蝴蝶形状（所有蝴蝶共用这一份，只定义不显示） ================= -->
 <!-- ================= 背景音乐（进入后自动播放，右下角可随时开关） ================= -->
-<audio id="bgm" src="assets/bgm.mp3?v=20261017M" loop preload="none"></audio>
+<audio id="bgm" src="assets/bgm.mp3?v=20261017N" loop preload="none"></audio>
 
 <!-- ================= 开场层：蝴蝶从两侧飞到中间 ================= -->
 <div class="intro" id="intro">
@@ -34,10 +34,10 @@
   <div class="intro__stars" aria-hidden="true"></div>
 
   <div class="intro__flies" aria-hidden="true">
-      <span class="swirl swirl--l"><span class="swirl__orbit"><img class="swirl__bf" src="assets/butterfly.png?v=20261017M" alt="" draggable="false" decoding="async"></span></span>
-      <span class="swirl swirl--r"><span class="swirl__orbit"><img class="swirl__bf" src="assets/butterfly.png?v=20261017M" alt="" draggable="false" decoding="async"></span></span>
+      <span class="swirl swirl--l"><span class="swirl__orbit"><img class="swirl__bf" src="assets/butterfly.png?v=20261017N" alt="" draggable="false" decoding="async"></span></span>
+      <span class="swirl swirl--r"><span class="swirl__orbit"><img class="swirl__bf" src="assets/butterfly.png?v=20261017N" alt="" draggable="false" decoding="async"></span></span>
       <span class="glow" aria-hidden="true"></span>
-      <span class="bloom" aria-hidden="true"><span class="bloom__grow"><img class="bloom__bf" src="assets/butterfly.png?v=20261017M" alt="" draggable="false" decoding="async"></span></span>
+      <span class="bloom" aria-hidden="true"><span class="bloom__grow"><img class="bloom__bf" src="assets/butterfly.png?v=20261017N" alt="" draggable="false" decoding="async"></span></span>
       
     </div>
 
@@ -81,10 +81,10 @@
       <h1 class="hero__name">你好，漂泊者</h1>
       <p class="hero__tagline">在这里，时间如潮水般流转，而我为你守望。<br>欢迎来到我的私人领地，这里是属于我们的一片宁静海岸。</p>
       <ul class="tags">
-        <li># 鸣潮</li>
-        <li># 守岸人</li>
-        <li># 蓝色星空</li>
-        <li># 个人主页</li>
+        <li># C/C++</li>
+        <li># Python</li>
+        <li># 游戏</li>
+        <li># 动漫</li>
       </ul>
       <div class="hero__actions">
         <a class="btn btn--primary" href="#about">认识我</a>
@@ -107,26 +107,35 @@
     <div class="about">
       <div class="about__avatar reveal">
         <!-- ✏️ 换成你的头像：把图片命名为 avatar.jpg 放进 assets/ 即可，尺寸建议 1:1 -->
-        <img src="assets/avatar.jpg?v=20261017M" alt="我的头像" width="240" height="240" loading="lazy">
+        <img src="assets/avatar.jpg?v=20261017N" alt="我的头像" width="240" height="240" loading="lazy">
       </div>
 
       <div class="about__body reveal">
         <!-- ✏️ 待填：自我介绍正文，想写几段就写几段 -->
         <p>你好，我是 <strong>你好，漂泊者</strong>。这里是自我介绍的第一段——可以写你是谁、在做什么、最近在忙什么。</p>
-        <p>第二段可以写你的喜好、性格，或者这个主页想做成什么样子。</p>
+        <p>我喜欢打游戏，例如鸣潮、王者荣耀、骑砍 2；我也对编程很感兴趣（虽然现在还是个新手小白）。</p>
 
         <dl class="facts">
-          <div><dt>身份</dt><dd>✏️ 例如：学生 / 打工人</dd></div>
+          <div><dt>身份</dt><dd>✏️ 学生</dd></div>
           <div><dt>现居</dt><dd>✏️ 城市</dd></div>
-          <div><dt>方向</dt><dd>✏️ 例如：后端开发 / 设计</dd></div>
-          <div><dt>爱好</dt><dd>✏️ 例如：鸣潮 · 音乐 · 摄影</dd></div>
+          <div><dt>方向</dt><dd>✏️ 网络安全</dd></div>
+          <div><dt>爱好</dt><dd>✏️ 游戏、排球、羽毛球、编程</dd></div>
         </dl>
       </div>
     </div>
   </section>
 
   <!-- ---------- 兴趣 ---------- -->
-  <section class="section" id="interests">
+  
+      <div class="about__qa reveal">
+        <h3 class="about__qa-title">关于我</h3>
+        <h4 class="about__q">为什么叫 jiez 这个名字？</h4>
+        <p class="about__a">因为几年前注册谷歌账号的时候，外国的名和姓是反着来的，我填反了，导致 z 和 jie 的位置互换变成了 jiez，翻译成「杰兹」——忽然觉得还不错，就一直用着了。</p>
+        <h4 class="about__q">为什么选择信息对抗技术这个专业？</h4>
+        <p class="about__a">一种缘分吧。当时知道录取了这个专业后我去了解了一下，发现会学习数电模电、网络攻防等等，与我感兴趣的方向正好符合；后来课上学习了 C 语言，以及了解到之后的课程安排，让我更加喜欢这个专业。</p>
+      </div>
+
+    <section class="section" id="interests">
     <header class="section__head reveal">
       <p class="section__index">02 / INTERESTS</p>
       <h2 class="section__title">兴趣与日常</h2>
@@ -189,13 +198,13 @@
 
     <div class="contacts">
       <!-- ✏️ 把 你的用户名 换成你的 GitHub 用户名 -->
-      <a class="contact-card reveal" href="https://github.com/你的用户名" target="_blank" rel="noopener noreferrer">
+      <a class="contact-card reveal" href="https://github.com/zjiek518518-collab" target="_blank" rel="noopener noreferrer">
         <span class="contact-card__label">GitHub</span>
-        <span class="contact-card__value">@你的用户名</span>
+        <span class="contact-card__value">@zjiek518518-collab</span>
         <span class="contact-card__arrow" aria-hidden="true">↗</span>
       </a>
       <!-- ✏️ 换成你的邮箱 -->
-      <a class="contact-card reveal" href="mailto:你的邮箱@example.com">
+      <a class="contact-card reveal" href="mailto:1147067354@qq.com">
         <span class="contact-card__label">邮箱</span>
         <span class="contact-card__value">你的邮箱@example.com</span>
         <span class="contact-card__arrow" aria-hidden="true">↗</span>
@@ -240,10 +249,10 @@
     <span class="pet__art">
       <span class="pet__puppet">
         <span class="pet__chew">
-          <img draggable="false" class="pet__layer pet__leg pet__leg--l" src="assets/pet-leg-l.png?v=20261017M" alt="" aria-hidden="true" decoding="async">
-          <img draggable="false" class="pet__layer pet__leg pet__leg--r" src="assets/pet-leg-r.png?v=20261017M" alt="" aria-hidden="true" decoding="async">
-          <img draggable="false" class="pet__layer pet__lower" src="assets/pet-lower.png?v=20261017M" alt="" aria-hidden="true" decoding="async">
-          <img draggable="false" class="pet__layer pet__upper" src="assets/pet-upper.png?v=20261017M" alt="" decoding="async">
+          <img draggable="false" class="pet__layer pet__leg pet__leg--l" src="assets/pet-leg-l.png?v=20261017N" alt="" aria-hidden="true" decoding="async">
+          <img draggable="false" class="pet__layer pet__leg pet__leg--r" src="assets/pet-leg-r.png?v=20261017N" alt="" aria-hidden="true" decoding="async">
+          <img draggable="false" class="pet__layer pet__lower" src="assets/pet-lower.png?v=20261017N" alt="" aria-hidden="true" decoding="async">
+          <img draggable="false" class="pet__layer pet__upper" src="assets/pet-upper.png?v=20261017N" alt="" decoding="async">
         </span>
       </span>
     </span>
@@ -251,6 +260,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=20261017M"></script>
+<script src="js/main.js?v=20261017N"></script>
 </body>
 </html>
