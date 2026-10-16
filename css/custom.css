@@ -484,7 +484,7 @@ section#about .ihead__title .ig .ch {
   section#about .ihead__title .ig .ch {
     background-image: linear-gradient(100deg,
       var(--igc) 0%, var(--igc) 36%,
-      #ffffff 50%,
+      var(--igl) 50%,
       var(--igc) 64%, var(--igc) 100%) !important;
     background-size: 240% 100% !important;
     background-repeat: no-repeat !important;
@@ -513,7 +513,7 @@ section#about .ihead__title .ig .ch {
 @media (min-width: 901px) {
   section#about .ihead__title .ig,
   section#about .ihead__title .ig .ch { text-shadow: none !important; }
-  section#about .ihead__title .ig--name { --igc: #ff9ecb; --igl: #fff0f7; }
-  section#about .ihead__title .ig--nick { --igc: #7ec8ff; --igl: #eaf7ff; }
-  section#about .ihead__title .ig--code { --igc: #5cdcff; --igl: #e8fcff; }
+  section#about .ihead__title .ig--name { --igc: #ff9ecb; --igl: #ffc6e0; }
+  section#about .ihead__title .ig--nick { --igc: #7ec8ff; --igl: #b8e2ff; }
+  section#about .ihead__title .ig--code { --igc: #5cdcff; --igl: #a8efff; }
 }
