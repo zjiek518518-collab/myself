@@ -473,21 +473,30 @@ section#about .ihead__title .ig .ch {
 }
 
 /* ===== 桌面端：流光加强（更白、更亮、带光晕、流动更快） ===== */
-@keyframes chWaveStrong {
-  0%   { color: var(--igc); filter: brightness(1); text-shadow: none; }
-  6%   { color: #ffffff; filter: brightness(1.62); text-shadow: none; }
-  11%  { color: #ffffff; filter: brightness(1.62); text-shadow: none; }
-  19%  { color: var(--igc); filter: brightness(1.06); text-shadow: none; }
-  100% { color: var(--igc); filter: brightness(1); text-shadow: none; }
+@keyframes chSweep {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 @media (min-width: 901px) {
   section#about .ihead__title .ig--name { --igl: #fff0f7; }
   section#about .ihead__title .ig--nick { --igl: #eaf7ff; }
   section#about .ihead__title .ig--code { --igl: #e8fcff; }
   section#about .ihead__title .ig .ch {
-    animation: chWaveStrong 3.2s ease-in-out infinite !important;
-    animation-delay: calc(var(--d, 0s) * 0.8) !important;   /* 桌面流动更快一点 */
-    will-change: color, text-shadow;
+    background-image: linear-gradient(100deg,
+      var(--igc) 0%, var(--igc) 36%,
+      #ffffff 50%,
+      var(--igc) 64%, var(--igc) 100%) !important;
+    background-size: 240% 100% !important;
+    background-repeat: no-repeat !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    filter: none !important;
+    text-shadow: none !important;
+    animation: chSweep 1.9s linear infinite !important;
+    animation-delay: calc(var(--d, 0s) * 1.05) !important;
+    will-change: background-position;
   }
 }
 /* 手机端：依旧完全静态、无阴影 */
