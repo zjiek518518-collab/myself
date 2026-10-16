@@ -393,7 +393,15 @@ section#about .ihead__title .ig--name { color: #ffb3d9 !important; -webkit-text-
 section#about .ihead__title .ig--nick { color: #9fd8ff !important; -webkit-text-fill-color: #9fd8ff !important; }
 section#about .ihead__title .ig--code { color: #7fe6ff !important; -webkit-text-fill-color: #7fe6ff !important; }
 
-/* ===== 关键词：纯色文字 + 上层流光（双层方案，任何浏览器都不会崩） ===== */
+@media (prefers-reduced-motion: reduce) {
+  section#about .ihead__title .ig::after { animation: none; background-position: 50% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  section#about .ihead__title .ig::after { animation: none !important; background-position: 12px 50% !important; }
+}
+
+/* ===== 关键词流光：逐字脉冲（只用 color / text-shadow，任何浏览器都不会失败） ===== */
 section#about .ihead__title .ig {
   position: relative;
   display: inline-block;
@@ -402,60 +410,23 @@ section#about .ihead__title .ig {
   animation: none !important;
   font-weight: 800 !important;
 }
-section#about .ihead__title .ig--name { color: #ffb3d9 !important; -webkit-text-fill-color: #ffb3d9 !important; }
-section#about .ihead__title .ig--nick { color: #9fd8ff !important; -webkit-text-fill-color: #9fd8ff !important; }
-section#about .ihead__title .ig--code { color: #7fe6ff !important; -webkit-text-fill-color: #7fe6ff !important; }
-section#about .ihead__title .ig::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0; top: 0;
-  width: 100%;
-  pointer-events: none;
-  color: transparent;
-  background-image: linear-gradient(100deg,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, .55) 47%,
-    rgba(255, 255, 255, .95) 50%,
-    rgba(255, 255, 255, .55) 53%,
-    rgba(255, 255, 255, 0) 60%);
-  background-size: 300% 100%;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: igFlow 3.8s linear infinite;
-  will-change: background-position;
+section#about .ihead__title .ig::after { content: none !important; display: none !important; }
+section#about .ihead__title .ig--name { --igc: #ffb3d9; --igg: 255, 179, 217; }
+section#about .ihead__title .ig--nick { --igc: #9fd8ff; --igg: 159, 216, 255; }
+section#about .ihead__title .ig--code { --igc: #7fe6ff; --igg: 127, 230, 255; }
+section#about .ihead__title .ig { color: var(--igc) !important; -webkit-text-fill-color: var(--igc) !important; }
+section#about .ihead__title .ig .ch {
+  display: inline-block;
+  color: var(--igc);
+  animation: chWave 2.1s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+  will-change: color, text-shadow;
 }
-section#about .ihead__title .ig--nick::after { animation-delay: .45s; }
-section#about .ihead__title .ig--code::after { animation-delay: .9s; }
-@keyframes igFlow {
-  0%   { background-position: 140% 50%; }
-  100% { background-position: -40% 50%; }
+@keyframes chWave {
+  0%, 62%, 100% { color: var(--igc); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+  16% { color: #ffffff; text-shadow: 0 0 8px rgba(var(--igg), .95), 0 0 18px rgba(var(--igg), .65), 0 0 30px rgba(var(--igg), .35); }
+  34% { color: #ffffff; text-shadow: 0 0 6px rgba(var(--igg), .6), 0 0 14px rgba(var(--igg), .35); }
 }
 @media (prefers-reduced-motion: reduce) {
-  section#about .ihead__title .ig::after { animation: none; background-position: 50% 50%; }
-}
-
-/* ===== 关键词：波浪式流光（多道柔光无缝连续涌动） ===== */
-section#about .ihead__title .ig::after {
-  background-image: repeating-linear-gradient(102deg,
-    rgba(255, 255, 255, 0)    0px,
-    rgba(255, 255, 255, 0)   14px,
-    rgba(214, 240, 255, .30) 26px,
-    rgba(255, 255, 255, .72) 36px,
-    rgba(214, 240, 255, .30) 46px,
-    rgba(255, 255, 255, 0)   58px,
-    rgba(255, 255, 255, 0)   92px) !important;
-  background-size: 92px 100% !important;
-  background-repeat: repeat !important;
-  animation: igWave 2.4s linear infinite !important;
-}
-section#about .ihead__title .ig--nick::after { animation-delay: .3s !important; }
-section#about .ihead__title .ig--code::after { animation-delay: .6s !important; }
-@keyframes igWave {
-  0%   { background-position: 0 50%; }
-  100% { background-position: 92px 50%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  section#about .ihead__title .ig::after { animation: none !important; background-position: 12px 50% !important; }
+  section#about .ihead__title .ig .ch { animation: none !important; }
 }

@@ -1136,4 +1136,22 @@
   })();
 
 
+
+  /* ================= 关键词：拆字 + 逐字流光 ================= */
+  (function () {
+    var items = document.querySelectorAll('.ihead__title .ig');
+    if (!items.length) return;
+    items.forEach(function (el) {
+      if (el.querySelector('.ch')) return;
+      var txt = (el.getAttribute('data-text') || el.textContent || '');
+      el.textContent = '';
+      for (var i = 0; i < txt.length; i++) {
+        var s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = txt.charAt(i);
+        s.style.setProperty('--d', (i * 0.085).toFixed(3) + 's');
+        el.appendChild(s);
+      }
+    });
+  })();
 })();
