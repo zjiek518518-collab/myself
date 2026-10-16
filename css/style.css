@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261018M) center center / cover no-repeat;
+  background: url(../assets/bg-main.webp?v=20261018M) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1938,7 +1938,7 @@ section#contact a.contact-card:nth-of-type(2) {
 @media (max-width: 900px) {
   .hero {
     background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                      url(../assets/bg-mobile.jpg?v=20261018R) !important;
+                      url(../assets/bg-mobile.webp?v=20261018R) !important;
   }
 }
 
@@ -2144,4 +2144,38 @@ section#about .facts > div::after { opacity: .52 !important; font-size: 23px !im
 @media (max-width: 620px) {
   section#about .ihead__title { font-size: clamp(21px, 6.6vw, 28px) !important; line-height: 1.54 !important; }
   section#about .facts > div::after { opacity: .42 !important; font-size: 20px !important; }
+}
+
+/* ===== 首屏内的北京时间（细内联条，不再是大卡片） ===== */
+.hero .clockbar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: auto;
+  max-width: 100%;
+  margin: 22px auto 6px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: rgba(10, 22, 40, .62);
+  border: 1px solid rgba(122, 178, 255, .24);
+  box-shadow: 0 8px 22px rgba(0, 6, 16, .34), inset 0 1px 0 rgba(170, 214, 255, .08);
+  backdrop-filter: blur(6px);
+}
+.hero .clockbar__time { font-size: 19px; letter-spacing: .03em; }
+.hero .clockbar__label { font-size: 11.5px; letter-spacing: .18em; }
+.hero .clockbar__date { font-size: 12px; }
+.hero .clockbar__dot { width: 6px; height: 6px; }
+
+/* ===== 首屏整体节奏理顺 ===== */
+.hero { padding-bottom: 9vh !important; }
+.hero .hero__tags, .hero .tags, .hero .hero__chips { margin-bottom: 4px; }
+.hero .enter-btn, .hero .hero__actions { margin-top: 22px; }
+.hero .scroll-hint, .hero .hero__hint, .hero .scroll__hint { margin-top: 18px !important; opacity: .8; }
+@media (max-width: 900px) {
+  .hero .clockbar { margin: 16px auto 4px; padding: 8px 14px; gap: 8px; }
+  .hero .clockbar__time { font-size: 17px; }
+  .hero .clockbar__date { font-size: 11.5px; }
+  .hero { padding-bottom: 7vh !important; }
 }
