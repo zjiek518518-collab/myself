@@ -474,10 +474,11 @@ section#about .ihead__title .ig .ch {
 
 /* ===== 桌面端：流光加强（更白、更亮、带光晕、流动更快） ===== */
 @keyframes chWaveStrong {
-  0%, 66%, 100% { color: var(--igc); filter: brightness(1); text-shadow: none; }
-  16% { color: #ffffff; filter: brightness(1.6); text-shadow: none; }
-  34% { color: #ffffff; filter: brightness(1.45); text-shadow: none; }
-  52% { color: var(--igl); filter: brightness(1.2); text-shadow: none; }
+  0%   { color: var(--igc); filter: brightness(1); text-shadow: none; }
+  6%   { color: #ffffff; filter: brightness(1.62); text-shadow: none; }
+  11%  { color: #ffffff; filter: brightness(1.62); text-shadow: none; }
+  19%  { color: var(--igc); filter: brightness(1.06); text-shadow: none; }
+  100% { color: var(--igc); filter: brightness(1); text-shadow: none; }
 }
 @media (min-width: 901px) {
   section#about .ihead__title .ig--name { --igl: #fff0f7; }
@@ -485,7 +486,7 @@ section#about .ihead__title .ig .ch {
   section#about .ihead__title .ig--code { --igl: #e8fcff; }
   section#about .ihead__title .ig .ch {
     animation: chWaveStrong 3.2s ease-in-out infinite !important;
-    animation-delay: calc(var(--d, 0s) * 0.6) !important;   /* 桌面流动更快一点 */
+    animation-delay: calc(var(--d, 0s) * 0.8) !important;   /* 桌面流动更快一点 */
     will-change: color, text-shadow;
   }
 }
