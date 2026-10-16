@@ -977,4 +977,63 @@
     }
   });
 
+
+  /* ================= 背景音乐容错：AbortError 自动重试 =================
+     手机上 play() 常被「新的加载请求/系统音频抢占」打断而报 AbortError，
+     这不是致命错误，退避重试即可恢复；同时记住「用户是想听音乐的」。 */
+  var wantMusic = false, musicRetry = 0, musicTimer = 0, musicWatch = 0;
+
+  function musicEl() { return document.getElementById('bgm'); }
+
+  function tryMusic(why) {
+    var a = musicEl();
+    if (!a || !wantMusic) return;
+    if (!a.paused && a.currentTime > 0) { musicRetry = 0; return; }
+    var pr = null;
+    try { pr = a.play(); } catch (e) { pr = null; }
+    if (pr && pr.catch) {
+      pr.catch(function (err) {
+        var name = (err && err.name) || '';
+        if (name === 'AbortError' && musicRetry < 4) {
+          musicRetry += 1;
+          clearTimeout(musicTimer);
+          musicTimer = setTimeout(function () { tryMusic('retry-' + musicRetry); }, 350 + musicRetry * 600);
+        }
+      });
+    }
+  }
+
+  // 第一次用户手势后（此时音频已解锁），稍等再确认音乐是否真的在播
+  document.addEventListener('click', function once() {
+    document.removeEventListener('click', once, true);
+    setTimeout(function () { if (!wantMusic) { wantMusic = true; tryMusic('enter'); } }, 1200);
+  }, true);
+
+  // 点右下角音乐按钮：同步「想听」的意图
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (!(t.closest('#musicToggle') || t.closest('.music-toggle'))) return;
+    setTimeout(function () {
+      var a = musicEl();
+      wantMusic = a ? a.paused : false;         // 点开后为 true、点关后为 false
+      musicRetry = 0;
+      if (wantMusic) tryMusic('toggle');
+    }, 450);
+  });
+
+  // 播放中途被系统打断（来电/切后台/网络抖动）：自动接回来
+  musicWatch = setInterval(function () {
+    var a = musicEl();
+    if (!a) return;
+    if (wantMusic && a.paused && a.currentTime > 0 && !a.ended) {
+      musicRetry = 0;
+      tryMusic('watchdog');
+    }
+  }, 12000);
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && wantMusic) setTimeout(function () { tryMusic('visible'); }, 600);
+  });
+
 })();
