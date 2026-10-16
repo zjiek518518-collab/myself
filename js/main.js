@@ -1134,4 +1134,22 @@
     tick();
     setInterval(tick, 1000);
   })();
+
+  /* ================= 关键词蓝色流光（内联强制，避免被层叠重置） ================= */
+  (function () {
+    var items = document.querySelectorAll('.ig');
+    if (!items.length) return;
+    var grad = 'linear-gradient(100deg, #4fb0ff 0%, #7fe0ff 20%, #eaf6ff 38%, #9fd8ff 56%, #5aa8ff 76%, #4fb0ff 100%)';
+    items.forEach(function (el, i) {
+      el.style.setProperty('background-image', grad, 'important');
+      el.style.setProperty('background-size', '260% 100%', 'important');
+      el.style.setProperty('background-repeat', 'no-repeat', 'important');
+      el.style.setProperty('-webkit-background-clip', 'text', 'important');
+      el.style.setProperty('background-clip', 'text', 'important');
+      el.style.setProperty('color', 'transparent', 'important');
+      el.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
+      el.style.setProperty('animation', 'blueFlow 6.5s linear infinite', 'important');
+      el.style.setProperty('animation-delay', (i * 0.5) + 's', 'important');
+    });
+  })();
 })();

@@ -141,3 +141,63 @@ section#about .about > div:not(.about__avatar) { margin-top: 0 !important; paddi
 /* 定位行不要有多余上边距/行高留白导致的视觉偏移 */
 section#about .ihead__kicker { margin-top: 0 !important; line-height: 1.35 !important; }
 section#about .ihead { margin-top: 0 !important; padding-top: 0 !important; }
+
+/* ===== 首屏时间：低调小字（无卡片、无边框、无「北京时间」字样） ===== */
+.hero .clockbar, .clockbar {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  width: auto !important;
+  margin: 20px auto 2px !important;
+  padding: 0 !important;
+  background: none !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.clockbar__time {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: .06em !important;
+  font-variant-numeric: tabular-nums !important;
+  color: rgba(214, 232, 255, .92) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: 0 0 14px rgba(120, 180, 255, .35) !important;
+}
+.clockbar__date {
+  font-size: 12.5px !important;
+  letter-spacing: .04em !important;
+  color: rgba(190, 214, 245, .58) !important;
+}
+.clockbar__time::after {
+  content: "·";
+  margin-left: 10px;
+  color: rgba(190, 214, 245, .38);
+  font-weight: 400;
+}
+@media (max-width: 620px) {
+  .clockbar { margin: 14px auto 0 !important; gap: 8px !important; }
+  .clockbar__time { font-size: 14px !important; }
+  .clockbar__date { font-size: 12px !important; }
+}
+
+/* ===== 定位行：纯色小字（彻底避免渐变被简写重置成色块） ===== */
+section#about .ihead__kicker, .ihead__kicker {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  color: #a8c8f5 !important;
+  -webkit-text-fill-color: #a8c8f5 !important;
+  font-size: 13px !important;
+  letter-spacing: .16em !important;
+  font-weight: 600 !important;
+  display: inline-block !important;
+  margin: 0 0 12px !important;
+  line-height: 1.35 !important;
+}
