@@ -1149,7 +1149,7 @@
         var s = document.createElement('span');
         s.className = 'ch';
         s.textContent = txt.charAt(i);
-        s.style.setProperty('--d', (i * 0.12).toFixed(3) + 's');
+        s.style.setProperty('--d', (i * 0.38).toFixed(3) + 's');
         el.appendChild(s);
       }
     });
