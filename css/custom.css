@@ -69,3 +69,66 @@ section#about .ihead__title {
 @media (max-width: 420px) {
   section#about .ihead__title { font-size: 24px; }
 }
+
+/* ===== 关于我：小卡片 ===== */
+.qa-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 4px;
+}
+.qa-card {
+  --acc: #7fb6ff;
+  position: relative;
+  padding: 18px 18px 16px 20px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(21, 39, 66, .96), rgba(12, 24, 44, .94));
+  border: 1px solid rgba(122, 178, 255, .28);
+  border-left: 3px solid var(--acc);
+  box-shadow: 0 12px 30px rgba(0, 6, 16, .40), inset 0 1px 0 rgba(170, 214, 255, .09);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.qa-card--2 { --acc: #a99bff; }
+.qa-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(150, 200, 255, .48);
+  box-shadow: 0 18px 38px rgba(0, 6, 16, .5), inset 0 1px 0 rgba(190, 225, 255, .15);
+}
+.qa-card__q {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 10px;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #f2f7ff;
+  line-height: 1.6;
+}
+.qa-card__badge {
+  flex: 0 0 auto;
+  width: 22px; height: 22px; border-radius: 7px;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 800;
+  color: #0b1626;
+  background: var(--acc);
+}
+.qa-card__a {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: rgba(224, 236, 252, .82);
+}
+.about__qa-title {
+  display: block;
+  margin: 0 0 14px;
+  font-size: 13px;
+  letter-spacing: .2em;
+  font-weight: 600;
+  color: #9dc2ff;
+}
+@media (max-width: 900px) {
+  .qa-grid { grid-template-columns: 1fr; gap: 12px; }
+  .qa-card { padding: 16px 15px 14px 17px; }
+  .qa-card__q { font-size: 15px; }
+  .qa-card__a { font-size: 14px; line-height: 1.88; }
+}
