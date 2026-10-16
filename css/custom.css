@@ -430,3 +430,27 @@ section#about .ihead__title .ig .ch {
 @media (prefers-reduced-motion: reduce) {
   section#about .ihead__title .ig .ch { animation: none !important; }
 }
+
+/* 「关于我」标题放大、加视觉分量（与其它小标题同一语言） */
+.about__qa-title, section#about .about__qa-title {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px !important;
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  letter-spacing: .06em !important;
+  color: #e6f0ff !important;
+  text-transform: none !important;
+}
+.about__qa-title::before {
+  content: "";
+  width: 3px;
+  height: 17px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #7fc0ff, #a99bff);
+}
+@media (max-width: 620px) {
+  .about__qa-title { font-size: 17.5px !important; margin-bottom: 16px !important; }
+  .about__qa-title::before { height: 16px; }
+}
