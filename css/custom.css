@@ -263,3 +263,9 @@ section#about .ihead__kicker, .ihead__kicker {
 
 /* 卡片前的引导句 */
 .gcard-lead { margin: 18px 0 0 !important; font-size: 13.5px !important; letter-spacing: .04em; color: rgba(200, 220, 255, .62) !important; }
+
+/* 骑砍卡片下方的个人感受 */
+.gcard-feel { margin: 10px 0 0 !important; font-size: 13.5px !important; line-height: 1.9 !important; color: rgba(206, 224, 250, .8) !important; }
+.gcard-feel strong { color: #ffffff; }
+.gcard__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 620px) { .gcard__desc { -webkit-line-clamp: 4; } }
