@@ -1110,4 +1110,28 @@
         t: +audio.currentTime.toFixed(2), dur: +(audio.duration || 0).toFixed(1), cur: cur && cur.getAttribute('data-src') }));
     };
   })();
+
+  /* ================= 北京时间（固定 Asia/Shanghai） ================= */
+  (function () {
+    var tEl = document.getElementById('bjTime');
+    var dEl = document.getElementById('bjDate');
+    if (!tEl || typeof Intl === 'undefined') return;
+    var WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    var fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Shanghai', hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', weekday: 'short'
+    });
+    function tick() {
+      var parts = {};
+      fmt.formatToParts(new Date()).forEach(function (p) { parts[p.type] = p.value; });
+      if (parts.hour === '24') parts.hour = '00';
+      tEl.textContent = parts.hour + ':' + parts.minute + ':' + parts.second;
+      var wd = parts.weekday || '';
+      var zhWd = { Sun: '周日', Mon: '周一', Tue: '周二', Wed: '周三', Thu: '周四', Fri: '周五', Sat: '周六' }[wd] || '';
+      if (dEl) dEl.textContent = parts.year + ' 年 ' + (+parts.month) + ' 月 ' + (+parts.day) + ' 日' + (zhWd ? ' · ' + zhWd : '');
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
 })();

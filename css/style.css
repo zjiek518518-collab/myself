@@ -2014,3 +2014,46 @@ section#contact a.contact-card:nth-of-type(2) .cc__icon {
   .ihead__title { font-size: clamp(23px, 7.4vw, 31px); line-height: 1.52; }
   .ihead__kicker { font-size: 12px; letter-spacing: .14em; }
 }
+
+/* ===== 北京时间条（首屏与自我介绍之间的分隔带） ===== */
+.clockbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: 1160px;
+  margin: -6px auto 0;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(18, 34, 58, .92), rgba(11, 22, 40, .90));
+  border: 1px solid rgba(122, 178, 255, .26);
+  box-shadow: 0 12px 30px rgba(0, 6, 16, .38), inset 0 1px 0 rgba(170, 214, 255, .08);
+}
+.clockbar__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #6fe0c0;
+  box-shadow: 0 0 0 0 rgba(111, 224, 192, .6);
+  animation: clockPulse 2.4s ease-out infinite;
+}
+@keyframes clockPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(111, 224, 192, .55); }
+  70%  { box-shadow: 0 0 0 9px rgba(111, 224, 192, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(111, 224, 192, 0); }
+}
+.clockbar__label { font-size: 13px; letter-spacing: .2em; color: #9dc2ff; }
+.clockbar__time {
+  font-size: clamp(22px, 4.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(92deg, #9fd8ff, #8fb8ff 55%, #a99bff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
+.clockbar__date { font-size: 13px; color: rgba(200, 220, 255, .62); }
+@media (max-width: 620px) {
+  .clockbar { gap: 9px; padding: 15px 14px; margin-top: 0; }
+  .clockbar__label { font-size: 12px; letter-spacing: .14em; }
+  .clockbar__date { font-size: 12px; width: 100%; text-align: center; }
+}
