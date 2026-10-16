@@ -454,14 +454,6 @@ section#about .ihead__title .ig .ch {
   .about__qa-title::before { height: 16px; }
 }
 
-/* 去雾：关键词及其逐字一律无阴影、无滤镜 */
-section#about .ihead__title,
-section#about .ihead__title .ig,
-section#about .ihead__title .ig .ch {
-  text-shadow: none !important;
-  filter: none !important;
-  -webkit-text-stroke: 0 !important;
-}
 
 /* 流光只在桌面端启用（手机端完全静态，零动画开销） */
 @media (min-width: 901px) {
@@ -471,6 +463,33 @@ section#about .ihead__title .ig .ch {
     will-change: color;
   }
 }
+@media (max-width: 900px) {
+  section#about .ihead__title .ig,
+  section#about .ihead__title .ig .ch {
+    animation: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+}
+
+/* ===== 桌面端：流光加强（更白、更亮、带光晕、流动更快） ===== */
+@keyframes chWaveStrong {
+  0%, 66%, 100% { color: var(--igc); text-shadow: none; }
+  16% { color: #ffffff; text-shadow: 0 0 7px rgba(var(--igg), .85), 0 0 18px rgba(var(--igg), .5), 0 0 32px rgba(var(--igg), .28); }
+  34% { color: #ffffff; text-shadow: 0 0 6px rgba(var(--igg), .6), 0 0 14px rgba(var(--igg), .3); }
+  52% { color: var(--igl); text-shadow: 0 0 4px rgba(var(--igg), .25); }
+}
+@media (min-width: 901px) {
+  section#about .ihead__title .ig--name { --igl: #fff0f7; }
+  section#about .ihead__title .ig--nick { --igl: #eaf7ff; }
+  section#about .ihead__title .ig--code { --igl: #e8fcff; }
+  section#about .ihead__title .ig .ch {
+    animation: chWaveStrong 3.2s ease-in-out infinite !important;
+    animation-delay: calc(var(--d, 0s) * 0.6) !important;   /* 桌面流动更快一点 */
+    will-change: color, text-shadow;
+  }
+}
+/* 手机端：依旧完全静态、无阴影 */
 @media (max-width: 900px) {
   section#about .ihead__title .ig,
   section#about .ihead__title .ig .ch {
