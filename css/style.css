@@ -1915,3 +1915,18 @@ section#contact a.contact-card {
 section#contact a.contact-card:nth-of-type(2) {
   border-left-color: #5fe3d0 !important;
 }
+
+/* ===== 自我介绍重点标注（荧光笔效果） ===== */
+.about__p .hl {
+  color: #ffffff !important;
+  font-weight: 700;
+  background-image: linear-gradient(180deg, rgba(111, 180, 255, 0) 58%, rgba(111, 180, 255, .30) 58%);
+  background-repeat: no-repeat;
+  padding: 0 3px;
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+@media (max-width: 900px) {
+  .about__p .hl { background-image: linear-gradient(180deg, rgba(111,180,255,0) 60%, rgba(111,180,255,.32) 60%); }
+}
