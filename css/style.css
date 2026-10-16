@@ -1786,7 +1786,7 @@ section#contact [class*="card"], section#contact a[class*="card"], section#conta
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(21, 39, 66, .97), rgba(12, 24, 44, .95));
   border: 1px solid rgba(122, 178, 255, .30);
-  border-left: 3px solid var(--acc);
+  border-left: 3px solid var(--acc) !important;
   box-shadow: 0 10px 26px rgba(0, 6, 16, .38), inset 0 1px 0 rgba(170, 214, 255, .09);
   overflow: hidden;
   transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
@@ -1848,3 +1848,70 @@ section#contact [class*="card"], section#contact a[class*="card"], section#conta
 .track__bar { grid-column: 1 / -1; height: 2px; border-radius: 2px; background: rgba(169, 155, 255, .18); overflow: hidden; }
 .track__bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #a99bff, #d9c9ff); }
 @media (max-width: 620px) { .track { grid-template-columns: 30px 1fr; } .track__a { grid-column: 2; font-size: 12px; } }
+
+/* ===== 联系卡片美化（与兴趣卡/信息卡同一套视觉语言） ===== */
+section#contact a.contact-card {
+  --acc: #a99bff;
+  --icon: "\1F419";
+  position: relative;
+  display: block;
+  margin: 12px 0 0;
+  padding: 16px 18px 16px 48px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(21, 39, 66, .96), rgba(12, 24, 44, .94)) !important;
+  border: 1px solid rgba(122, 178, 255, .30) !important;
+  border-left: 3px solid var(--acc) !important;
+  box-shadow: 0 12px 30px rgba(0, 6, 16, .40), inset 0 1px 0 rgba(170, 214, 255, .09);
+  text-decoration: none;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+section#contact a.contact-card::before {
+  content: var(--icon);
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  margin-top: -12px;
+  font-size: 20px;
+  opacity: .9;
+}
+section#contact a.contact-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(150, 200, 255, .5) !important;
+  box-shadow: 0 18px 38px rgba(0, 6, 16, .5), inset 0 1px 0 rgba(190, 225, 255, .15);
+}
+section#contact a.contact-card:nth-of-type(2) { --acc: #5fe3d0; --icon: "\2709"; }
+
+/* ===== 手机端细节（触控热区 ≥40px、间距、字号） ===== */
+* { -webkit-tap-highlight-color: transparent; }
+@media (max-width: 900px) {
+  .section { padding-left: 16px !important; padding-right: 16px !important; }
+  .sec-title { font-size: 23px !important; }
+  .facts { gap: 11px !important; }
+  .facts > div { padding: 13px 12px 12px 14px !important; }
+  .facts dd { font-size: 15px !important; line-height: 1.6 !important; }
+  .blk { padding: 17px 15px 15px !important; margin-top: 18px !important; }
+  .blk__p, .about__a { font-size: 14.5px !important; line-height: 1.92 !important; }
+  .track { padding: 12px !important; }
+  .track__btn { width: 40px !important; height: 40px !important; font-size: 14px !important; }
+  .chip { padding: 4px 11px !important; font-size: 12.5px !important; }
+  .enter-btn { min-height: 50px !important; padding: 0 34px !important; }
+  #musicToggle, .music-toggle { min-height: 44px !important; }
+  section#contact a.contact-card { padding: 15px 16px 15px 46px !important; }
+  .footer { padding-bottom: 90px !important; }
+}
+@media (max-width: 420px) {
+  .sec-title { font-size: 21px !important; }
+  .blk__h { font-size: 16px !important; }
+  .track__t { font-size: 14px !important; }
+}
+
+/* ===== 联系卡片兜底（务必压过早前的 border 简写） ===== */
+section#contact a.contact-card {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+  border-left-color: #a99bff !important;
+  padding-left: 48px !important;
+}
+section#contact a.contact-card:nth-of-type(2) {
+  border-left-color: #5fe3d0 !important;
+}
