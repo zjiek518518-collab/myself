@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261017M) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261017T) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261017M) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261017T) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1381,7 +1381,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .hero, .main {
   /* 整页一张连续背景（fixed+cover，滚动时完全不位移）＋统一压暗，避免段落之间接不上 */
   background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                    url(../assets/bg.jpg?v=20261017M);
+                    url(../assets/bg.jpg?v=20261017T);
   background-size: cover, cover;
   background-position: center center, center 22%;
   background-repeat: no-repeat, no-repeat;
@@ -1660,7 +1660,7 @@ html, body { overscroll-behavior-y: contain; }
 }
 .hero {
   background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                    url(../assets/bg.jpg?v=20261017M) !important;
+                    url(../assets/bg.jpg?v=20261017T) !important;
   background-size: cover, cover !important;
   background-position: center center, center 22% !important;
   background-repeat: no-repeat, no-repeat !important;
@@ -1695,3 +1695,44 @@ section#about, .about, .section, .site-footer, footer {
   border-radius: 0 12px 12px 0; background: rgba(80, 150, 255, .08);
   font-size: 14px; line-height: 1.95; color: #d8e8ff; font-style: italic; }
 @media (max-width: 620px) { .blk { padding: 16px 14px 14px; } .blk__p { font-size: 14px; } }
+
+/* ===== 卡片更"明显"：更实的底色、更清楚的边框、投影与顶部高光线 ===== */
+.blk {
+  position: relative;
+  margin: 28px 0 0;
+  padding: 24px 22px 20px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(20, 38, 64, .96), rgba(12, 24, 44, .94));
+  border: 1px solid rgba(122, 178, 255, .32);
+  box-shadow: 0 14px 34px rgba(0, 6, 16, .42), inset 0 1px 0 rgba(170, 214, 255, .10);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.blk::before {
+  content: "";
+  position: absolute; left: 20px; right: 20px; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(150, 205, 255, .6), transparent);
+}
+.blk:hover {
+  transform: translateY(-2px);
+  border-color: rgba(150, 200, 255, .5);
+  box-shadow: 0 18px 40px rgba(0, 8, 20, .5), inset 0 1px 0 rgba(190, 225, 255, .16);
+}
+/* 自我介绍的四张信息卡同样加明显 */
+section#about .info-card,
+section#about .fact,
+section#about [class*="card"],
+section#about [class*="info-"],
+section#about [class*="meta"] {
+  background: linear-gradient(180deg, rgba(20, 38, 64, .96), rgba(12, 24, 44, .94)) !important;
+  border: 1px solid rgba(122, 178, 255, .30) !important;
+  box-shadow: 0 10px 26px rgba(0, 6, 16, .38), inset 0 1px 0 rgba(170, 214, 255, .09) !important;
+  border-radius: 14px !important;
+}
+/* 联系卡片也一起 */
+section#contact [class*="card"], section#contact a[class*="card"], section#contact [class*="link"] {
+  border: 1px solid rgba(122, 178, 255, .30) !important;
+  box-shadow: 0 10px 26px rgba(0, 6, 16, .38) !important;
+}
+@media (max-width: 620px) {
+  .blk { padding: 18px 16px 16px; margin-top: 20px; border-radius: 16px; }
+}
