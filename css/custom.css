@@ -288,3 +288,49 @@ section#about .ihead__kicker, .ihead__kicker {
   background: linear-gradient(90deg, rgba(120, 175, 255, .34), rgba(120, 175, 255, 0));
 }
 @media (max-width: 620px) { .gcard-sub { margin-top: 18px !important; font-size: 12.5px !important; } }
+
+/* ===== 间距放宽：区块 / 卡片 / 段落都加呼吸感 ===== */
+.section { padding-top: 84px !important; padding-bottom: 84px !important; }
+.hero { padding-bottom: 11vh !important; }
+.sec-head, .section__head { margin-bottom: 30px !important; }
+.sec-title, .section__title { margin-bottom: 6px !important; }
+
+.ihead { margin: 8px 0 28px !important; }
+.about__p { margin-top: 20px !important; margin-bottom: 0 !important; }
+
+.facts { margin-top: 30px !important; gap: 16px !important; }
+.blk { margin-top: 36px !important; padding: 26px 22px 24px !important; }
+.blk__h { margin-bottom: 18px !important; }
+.blk__h4 { margin: 24px 0 12px !important; }
+.blk__p { margin-bottom: 14px !important; line-height: 2.0 !important; }
+.blk__p:last-child { margin-bottom: 0 !important; }
+.quote { margin: 20px 0 22px !important; padding: 16px 20px !important; }
+
+.about__qa { margin-top: 34px !important; padding-top: 26px !important; }
+.about__qa-title { margin-bottom: 18px !important; }
+.qa-grid { gap: 18px !important; }
+.qa-card { padding: 20px 20px 18px 22px !important; }
+.qa-card__q { margin-bottom: 12px !important; }
+.qa-card__a { line-height: 2.0 !important; }
+
+.gcard-sub { margin-top: 32px !important; }
+.gcard { margin-top: 16px !important; padding: 14px 16px !important; }
+.gcard + .gcard { margin-top: 14px !important; }
+.gcard-feel { margin-top: 14px !important; line-height: 2.0 !important; }
+.tracks { margin-top: 16px !important; }
+.track { margin: 11px 0 !important; padding: 12px 13px !important; }
+section#contact a.contact-card { margin-top: 16px !important; }
+.footer { padding-top: 56px !important; padding-bottom: 100px !important; }
+
+@media (max-width: 900px) {
+  .section { padding-top: 58px !important; padding-bottom: 58px !important; }
+  .sec-head, .section__head { margin-bottom: 22px !important; }
+  .blk { margin-top: 26px !important; padding: 19px 16px 17px !important; }
+  .blk__h { margin-bottom: 14px !important; }
+  .blk__h4 { margin: 20px 0 10px !important; }
+  .blk__p { margin-bottom: 12px !important; line-height: 1.96 !important; }
+  .facts { margin-top: 22px !important; gap: 12px !important; }
+  .gcard-sub { margin-top: 24px !important; }
+  .about__qa { margin-top: 26px !important; padding-top: 20px !important; }
+  .qa-grid { gap: 14px !important; }
+}
