@@ -342,3 +342,12 @@ section#contact a.contact-card { margin-top: 16px !important; }
   .gcard--nocover { grid-template-columns: minmax(0, 1fr) !important; }
   .gcard--nocover .gcard__btn { grid-column: 1 / -1; justify-content: center; }
 }
+
+/* 骑砍个人描述：卡片上方的引导段 */
+.gcard-feel, .blk__p.gcard-feel {
+  margin: 18px 0 12px !important;
+  font-size: 14px !important;
+  line-height: 2.0 !important;
+  color: rgba(212, 228, 252, .86) !important;
+}
+.gcard-feel strong { color: #ffffff; }
