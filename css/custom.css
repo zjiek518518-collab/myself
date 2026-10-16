@@ -475,9 +475,9 @@ section#about .ihead__title .ig .ch {
 /* ===== 桌面端：流光加强（更白、更亮、带光晕、流动更快） ===== */
 @keyframes chWaveStrong {
   0%, 66%, 100% { color: var(--igc); text-shadow: none; }
-  16% { color: #ffffff; text-shadow: 0 0 7px rgba(var(--igg), .85), 0 0 18px rgba(var(--igg), .5), 0 0 32px rgba(var(--igg), .28); }
-  34% { color: #ffffff; text-shadow: 0 0 6px rgba(var(--igg), .6), 0 0 14px rgba(var(--igg), .3); }
-  52% { color: var(--igl); text-shadow: 0 0 4px rgba(var(--igg), .25); }
+  16% { color: #ffffff; text-shadow: none; }
+  34% { color: #ffffff; text-shadow: none; }
+  52% { color: var(--igl); text-shadow: none; }
 }
 @media (min-width: 901px) {
   section#about .ihead__title .ig--name { --igl: #fff0f7; }
@@ -497,4 +497,10 @@ section#about .ihead__title .ig .ch {
     text-shadow: none !important;
     filter: none !important;
   }
+}
+
+/* 桌面端也彻底无光晕（强度只由颜色给，不再有雾） */
+@media (min-width: 901px) {
+  section#about .ihead__title .ig,
+  section#about .ihead__title .ig .ch { text-shadow: none !important; filter: none !important; }
 }
