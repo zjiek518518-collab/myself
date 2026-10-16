@@ -1450,8 +1450,8 @@ section#about {
   animation: petEdgeHide 5.2s ease-in-out infinite alternate;
 }
 @keyframes petEdgeHide {
-  from { transform: translateX(112px) translateY(0) rotate(0deg); }
-  to   { transform: translateX(103px) translateY(-4px) rotate(2deg); }
+  from { transform: translateX(var(--pet-hide-a, 112px)) translateY(0) rotate(0deg); }
+  to   { transform: translateX(var(--pet-hide-b, 103px)) translateY(-4px) rotate(2deg); }
 }
 
 
@@ -1929,4 +1929,58 @@ section#contact a.contact-card:nth-of-type(2) {
 }
 @media (max-width: 900px) {
   .about__p .hl { background-image: linear-gradient(180deg, rgba(111,180,255,0) 60%, rgba(111,180,255,.32) 60%); }
+}
+
+/* ===== 手机端：换成轻量背景图（1.1MB -> 约 100KB） ===== */
+@media (max-width: 900px) {
+  .hero {
+    background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
+                      url(../assets/bg-mobile.jpg?v=20261018R) !important;
+  }
+}
+
+/* ===== 联系卡片重做：图标徽章 + 标签/值 + 箭头，整体一体感 ===== */
+section#contact a.contact-card {
+  display: flex !important;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 16px !important;
+  border-left: 3px solid var(--acc, #a99bff) !important;
+  border-radius: 16px !important;
+}
+section#contact a.contact-card::before { content: none !important; }
+.cc__icon {
+  flex: 0 0 auto;
+  width: 42px; height: 42px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 20px;
+  background: rgba(169, 155, 255, .14);
+  border: 1px solid rgba(169, 155, 255, .30);
+}
+.cc__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.cc__k { font-size: 12px; letter-spacing: .12em; color: var(--acc, #a99bff); }
+.cc__v { font-size: 15.5px; font-weight: 600; color: #f2f7ff; word-break: break-all; }
+.cc__go { flex: 0 0 auto; font-size: 15px; color: rgba(200, 220, 255, .55); }
+section#contact a.contact-card:hover .cc__go { color: #cfe4ff; }
+section#contact a.contact-card:nth-of-type(2) .cc__icon {
+  background: rgba(95, 227, 208, .14);
+  border-color: rgba(95, 227, 208, .30);
+}
+@media (max-width: 900px) {
+  .cc__icon { width: 38px; height: 38px; font-size: 18px; }
+  .cc__v { font-size: 15px; }
+}
+
+/* ===== 手机端：桌宠缩小（122px -> 96px），躲藏位移按比例收敛，保证脑袋仍露在外面 ===== */
+@media (max-width: 900px) {
+  .pet { width: 96px !important; }
+  /* 躲藏位移按 96/122 ≈ 0.79 缩放：112 -> 88，103 -> 81 */
+  .pet--edge-l .pet__art, .pet--edge-r .pet__art { --pet-hide-scale: .79; }
+  .pet__speech { font-size: 13.5px !important; }
+  .pet--edge-l .pet__speech { left: 54px !important; width: 150px !important; }
+  .pet--edge-r .pet__speech { right: 54px !important; width: 150px !important; }
+}
+
+/* 手机端：桌宠 96px 时，躲藏位移按 96/122≈0.79 收敛，保证脑袋露出一截 */
+@media (max-width: 900px) {
+  .pet { --pet-hide-a: 78px; --pet-hide-b: 72px; }
 }
