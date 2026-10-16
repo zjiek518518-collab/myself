@@ -351,3 +351,11 @@ section#contact a.contact-card { margin-top: 16px !important; }
   color: rgba(212, 228, 252, .86) !important;
 }
 .gcard-feel strong { color: #ffffff; }
+
+/* 骑砍2 与其余游戏之间的引导句 */
+.blk__p.gcard-more {
+  margin: 20px 0 10px !important;
+  font-size: 13.5px !important;
+  letter-spacing: .06em;
+  color: rgba(200, 220, 255, .64) !important;
+}
