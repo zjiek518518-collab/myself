@@ -1,0 +1,71 @@
+
+/* ===== 自定义样式（干净文件：不依赖被解析器丢弃的追加区） ===== */
+
+/* 1) 自我介绍：文字块与左侧头像顶部平齐 */
+section#about .about__head, section#about .about__inner, section#about .about__top,
+section#about .about__body, section#about .ihead,
+section#about [class*="about__"][class*="flex"], section#about [class*="profile"] {
+  align-items: flex-start !important;
+}
+section#about .about__head, section#about .about__inner, section#about .about__top {
+  align-items: flex-start !important;
+}
+section#about .ihead { margin-top: 0 !important; padding-top: 0 !important; }
+section#about .ihead__kicker { margin-top: 0 !important; }
+
+/* 2) 定位行：渐变文字（明确裁剪到文字，绝不再变成色块） */
+section#about .ihead__kicker {
+  display: inline-block;
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: .16em;
+  font-weight: 600;
+  background-image: linear-gradient(94deg, #8fc6ff, #a9a6ff 55%, #c9a6ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 3) 大标题：字号收敛 + 与头像对齐 */
+section#about .ihead__title {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.5;
+  font-weight: 800;
+  letter-spacing: .005em;
+  color: #f4f8ff;
+  max-width: 44em;
+}
+
+/* 4) 关键词：蓝色流光（渐变扫过 + 缓慢流动） */
+.ig {
+  background-image: linear-gradient(100deg, #4fb0ff 0%, #7fe0ff 22%, #eaf6ff 40%, #9fd8ff 58%, #5aa8ff 78%, #4fb0ff 100%);
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: blueFlow 6.5s linear infinite;
+  font-weight: 800;
+}
+.ig--name { animation-delay: 0s; }
+.ig--nick { animation-delay: .5s; }
+.ig--code { animation-delay: 1s; }
+@keyframes blueFlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ig { animation: none; background-position: 30% 50%; }
+}
+
+/* 5) 手机端字号 */
+@media (max-width: 900px) {
+  section#about .ihead__title { font-size: 27px; line-height: 1.56; }
+  section#about .ihead__kicker { font-size: 12px; }
+}
+@media (max-width: 420px) {
+  section#about .ihead__title { font-size: 24px; }
+}
