@@ -435,3 +435,27 @@ section#about .ihead__title .ig--code::after { animation-delay: .9s; }
 @media (prefers-reduced-motion: reduce) {
   section#about .ihead__title .ig::after { animation: none; background-position: 50% 50%; }
 }
+
+/* ===== 关键词：波浪式流光（多道柔光无缝连续涌动） ===== */
+section#about .ihead__title .ig::after {
+  background-image: repeating-linear-gradient(102deg,
+    rgba(255, 255, 255, 0)    0px,
+    rgba(255, 255, 255, 0)   14px,
+    rgba(214, 240, 255, .30) 26px,
+    rgba(255, 255, 255, .72) 36px,
+    rgba(214, 240, 255, .30) 46px,
+    rgba(255, 255, 255, 0)   58px,
+    rgba(255, 255, 255, 0)   92px) !important;
+  background-size: 92px 100% !important;
+  background-repeat: repeat !important;
+  animation: igWave 2.4s linear infinite !important;
+}
+section#about .ihead__title .ig--nick::after { animation-delay: .3s !important; }
+section#about .ihead__title .ig--code::after { animation-delay: .6s !important; }
+@keyframes igWave {
+  0%   { background-position: 0 50%; }
+  100% { background-position: 92px 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  section#about .ihead__title .ig::after { animation: none !important; background-position: 12px 50% !important; }
+}
