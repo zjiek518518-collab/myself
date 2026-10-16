@@ -65,7 +65,7 @@ ul { list-style: none; }
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url(../assets/bg.jpg?v=20261017I) center 24% / cover no-repeat;
+  background: url(../assets/bg.jpg?v=20261017K) center 24% / cover no-repeat;
   opacity: 0;
   transition: opacity 1.6s var(--ease) .15s;
 }
@@ -115,7 +115,7 @@ body.is-entered .intro {
 .intro__bg {
   position: absolute;
   inset: -6%;
-  background: url(../assets/bg-main.jpg?v=20261017I) center center / cover no-repeat;
+  background: url(../assets/bg-main.jpg?v=20261017K) center center / cover no-repeat;
   filter: blur(8px) brightness(.58) saturate(1.15);
   transform: scale(1.06);
 }
@@ -1381,7 +1381,7 @@ body.is-dock-r .dock-hint--r { animation: dockPulse 1.1s ease-in-out infinite; }
 .hero, .main {
   /* 整页一张连续背景（fixed+cover，滚动时完全不位移）＋统一压暗，避免段落之间接不上 */
   background-image: linear-gradient(rgba(6, 14, 26, .72), rgba(6, 14, 26, .86)),
-                    url(../assets/bg.jpg?v=20261017I);
+                    url(../assets/bg.jpg?v=20261017K);
   background-size: cover, cover;
   background-position: center center, center 22%;
   background-repeat: no-repeat, no-repeat;
@@ -1605,3 +1605,35 @@ body.is-entered .intro__stars * {
 /* 4) 滚动容器与惯性 */
 html, body { overscroll-behavior-y: contain; }
 #top, section { scroll-margin-top: 76px; }
+
+/* ===== 汇聚光圈（覆盖旧版）：大而柔的弥散光，无可见边缘、无硬闪 ===== */
+.glow {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: none;
+  background: radial-gradient(circle,
+    rgba(255, 255, 255, .55) 0%,
+    rgba(214, 244, 255, .40) 16%,
+    rgba(130, 210, 255, .26) 34%,
+    rgba(70, 160, 255, .14) 54%,
+    rgba(40, 110, 220, .06) 72%,
+    rgba(30, 90, 200, 0) 86%);
+  animation: glowBurst 3.1s cubic-bezier(.32, .28, .4, 1) 3.75s forwards;
+}
+@keyframes glowBurst {
+  0%   { opacity: 0;   transform: scale(.5); }
+  24%  { opacity: .5;  transform: scale(.92); }
+  50%  { opacity: .88; transform: scale(1.1); }
+  74%  { opacity: .62; transform: scale(1.24); }
+  100% { opacity: 0;   transform: scale(1.46); }
+}
+@media (max-width: 900px) {
+  .glow { width: 360px; height: 360px; margin: -180px 0 0 -180px; }
+}
