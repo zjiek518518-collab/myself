@@ -1139,6 +1139,8 @@
 
   /* ================= 关键词：拆字 + 逐字流光 ================= */
   (function () {
+    if (window.innerWidth < 901) return;          // 手机端不做逐字动画：一个字都不拆
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var items = document.querySelectorAll('.ihead__title .ig');
     if (!items.length) return;
     items.forEach(function (el) {

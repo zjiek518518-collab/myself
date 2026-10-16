@@ -418,9 +418,8 @@ section#about .ihead__title .ig { color: var(--igc) !important; -webkit-text-fil
 section#about .ihead__title .ig .ch {
   display: inline-block;
   color: var(--igc);
-  animation: chWave 5s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-  will-change: color, text-shadow;
+  animation: none;
+  color: var(--igc);
 }
 @keyframes chWave {
   0%, 72%, 100% { color: var(--igc); text-shadow: none; }
@@ -462,4 +461,21 @@ section#about .ihead__title .ig .ch {
   text-shadow: none !important;
   filter: none !important;
   -webkit-text-stroke: 0 !important;
+}
+
+/* 流光只在桌面端启用（手机端完全静态，零动画开销） */
+@media (min-width: 901px) {
+  section#about .ihead__title .ig .ch {
+    animation: chWave 5s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+    will-change: color;
+  }
+}
+@media (max-width: 900px) {
+  section#about .ihead__title .ig,
+  section#about .ihead__title .ig .ch {
+    animation: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
 }
