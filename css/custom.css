@@ -392,3 +392,46 @@ section#about .ihead__title .ig--code,
 section#about .ihead__title .ig--name { color: #ffb3d9 !important; -webkit-text-fill-color: #ffb3d9 !important; }
 section#about .ihead__title .ig--nick { color: #9fd8ff !important; -webkit-text-fill-color: #9fd8ff !important; }
 section#about .ihead__title .ig--code { color: #7fe6ff !important; -webkit-text-fill-color: #7fe6ff !important; }
+
+/* ===== 关键词：纯色文字 + 上层流光（双层方案，任何浏览器都不会崩） ===== */
+section#about .ihead__title .ig {
+  position: relative;
+  display: inline-block;
+  background: none !important;
+  background-image: none !important;
+  animation: none !important;
+  font-weight: 800 !important;
+}
+section#about .ihead__title .ig--name { color: #ffb3d9 !important; -webkit-text-fill-color: #ffb3d9 !important; }
+section#about .ihead__title .ig--nick { color: #9fd8ff !important; -webkit-text-fill-color: #9fd8ff !important; }
+section#about .ihead__title .ig--code { color: #7fe6ff !important; -webkit-text-fill-color: #7fe6ff !important; }
+section#about .ihead__title .ig::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  pointer-events: none;
+  color: transparent;
+  background-image: linear-gradient(100deg,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, .55) 47%,
+    rgba(255, 255, 255, .95) 50%,
+    rgba(255, 255, 255, .55) 53%,
+    rgba(255, 255, 255, 0) 60%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: igFlow 3.8s linear infinite;
+  will-change: background-position;
+}
+section#about .ihead__title .ig--nick::after { animation-delay: .45s; }
+section#about .ihead__title .ig--code::after { animation-delay: .9s; }
+@keyframes igFlow {
+  0%   { background-position: 140% 50%; }
+  100% { background-position: -40% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  section#about .ihead__title .ig::after { animation: none; background-position: 50% 50%; }
+}
